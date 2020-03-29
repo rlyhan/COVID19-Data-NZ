@@ -12,9 +12,11 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "jquery": "^3.4.1",
+    "moment": "^2.24.0",
     "nodemon": "^2.0.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-google-charts": "^3.0.15",
     "react-scripts": "3.4.1"
   },
   "proxy": "http://localhost:5000",
