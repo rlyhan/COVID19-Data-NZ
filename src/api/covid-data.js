@@ -1,7 +1,7 @@
 import cheerio from 'cheerio'
 import axios from 'axios'
 
-import { convertDateToISO } from '../helpers/dates'
+import { convertStringToDate } from '../helpers/dates'
 
 export async function fetchSummaryData() {
 
@@ -20,7 +20,6 @@ export async function fetchSummaryData() {
 
   $(dataTable).find('tr').each((rowIndex, row) => {
     let caseType = Object.keys(summaryData)[rowIndex]
-    console.log("case type", caseType)
 
     $(row).find('td').each((colIndex, col) => {
       let count = $(col).text()
@@ -58,15 +57,15 @@ export async function fetchConfirmedCases() {
     })
 
     cases.push({
-      "reportDate": convertDateToISO(individualCaseData[0]),
+      "reportDate": convertStringToDate(individualCaseData[0]),
       "sex": individualCaseData[1],
       "ageGroup": individualCaseData[2],
       "districtHealthBoard": individualCaseData[3],
       "overseas": individualCaseData[4],
       "lastCityBeforeNZ": individualCaseData[5],
       "flightNumber": individualCaseData[6],
-      "departureDate": convertDateToISO(individualCaseData[7]),
-      "arrivalDate": convertDateToISO(individualCaseData[8])
+      "departureDate": convertStringToDate(individualCaseData[7]),
+      "arrivalDate": convertStringToDate(individualCaseData[8])
     })
   })
 

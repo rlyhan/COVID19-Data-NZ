@@ -1,6 +1,6 @@
 import moment from 'moment'
 
-import { casesBetweenDates, convertISOToDate } from './dates'
+import { casesBetweenDates, convertDateToString } from './dates'
 
 // Accepts the array and key
 const group = (array, key) => {
@@ -20,7 +20,7 @@ const group = (array, key) => {
 function sortGroupedCases(cases) {
   var orderedGroupedCases = {}
   Object.keys(cases).sort(function(a, b) {
-    return moment(a).diff(moment(b))
+    return moment(convertDateToString(a)).diff(moment(convertDateToString(b)))
   }).forEach((key) => {
     orderedGroupedCases[key] = cases[key]
   })
@@ -37,11 +37,9 @@ export function confirmedCasesToCoords(cases, startDate, endDate) {
   // Sort cases by date
   var orderedCasesByDate = sortGroupedCases(casesByDate)
 
-  console.log(orderedCasesByDate)
-
   // Create coordinates: Each coord being an array of [date, no. cases at date]
   Object.entries(orderedCasesByDate).forEach(([key, value]) => {
-    coords.push([convertISOToDate(key), value.length])
+    coords.push([new Date(key), value.length])
   })
 
   return coords

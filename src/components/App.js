@@ -11,11 +11,12 @@ class App extends Component {
     super()
     this.state = {
       currentPage: '',
-      summaryData: {},
+      summaryData: null,
       currentData: []
     }
   }
 
+  // Fetch summary data of cases and confirmed cases over last 30 days
   componentDidMount() {
     fetchSummaryData()
       .then(data => {
@@ -35,7 +36,11 @@ class App extends Component {
     return (
       <div className="App">
         <GoogleChart data={this.state.currentData} />
-        <div></div>
+        { this.state.summaryData &&
+          <div>
+
+          </div>
+        }
       </div>
     );
   }
