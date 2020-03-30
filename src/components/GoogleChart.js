@@ -6,7 +6,7 @@ class GoogleChart extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      coordinates: null
+      coordinates: []
     }
   }
 
@@ -21,12 +21,13 @@ class GoogleChart extends Component {
   render() {
     return (
       <>
-      { this.props.data &&
+      { this.props.data === [] ?
+        <div>Loading...</div> :
+        this.props.data === null ?
+        <div>Could not fetch data. Please try again.</div> :
         <Chart
-          width={'600px'}
-          height={'400px'}
           chartType="AnnotationChart"
-          loader={<div>Loading Chart</div>}
+          loader={<div>Loading Chart...</div>}
           rows={this.props.data}
           columns={[
             {
@@ -46,6 +47,13 @@ class GoogleChart extends Component {
               },
             },
           ]}
+          options={{
+            width: '600px',
+            height: '400px',
+            chartArea: {
+              backgroundColor: 'black'
+            }
+          }}
           rootProps={{ 'data-testid': '2' }}
         />
       }
