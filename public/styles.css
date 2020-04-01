@@ -1,3 +1,137 @@
-/* #graph div{
-   background-color: black;
-} */
+body {
+  font-family: 'Quicksand', sans-serif;
+  padding: 0;
+  margin: 0;
+  color: white;
+  background-color: black;
+}
+
+.header {
+  text-align: center;
+}
+
+.site-content {
+  padding: 0 2.5%;
+  display: grid;
+  grid-template-columns: auto;
+}
+
+@media (min-width: 768px) {
+
+  .site-content {
+    padding: 0 10%;
+    /* grid-template-columns: repeat(2, 1fr); */
+    grid-template-columns: 66% 33%;
+    grid-column-gap: 10px;
+  }
+
+}
+
+.round-border {
+  border-radius: 5px;
+  padding: 5px;
+}
+
+/*** Google Chart ***/
+
+  /* Actual Chart */
+
+    /* Chart background: black and Chart border: grey */
+    #reactgooglegraph-1_AnnotationChart_borderDiv {
+      border-color: #212121;
+      background-color: black;
+    }
+
+    /* Chart time filter background: black */
+    #reactgooglegraph-1_AnnotationChart_rangeControlContainer g rect[fill] {
+      fill: black;
+    }
+
+    /* Chart time filter grid lines: grey */
+    #reactgooglegraph-1_AnnotationChart_rangeControlContainer g > g > g > rect[fill] {
+      fill: #212121;
+    }
+
+    /* Chart time filter edges: grey */
+    #reactgooglegraph-1_AnnotationChart_rangeControlContainer > div > div > div > svg > rect[fill] {
+      /* fill: #212121; */
+    }
+
+    /* Annotation table */
+    .google-visualization-atl .annotationsContainer .google-visualization-table-tr-odd,
+    .google-visualization-atl .annotationsContainer .google-visualization-table-tr-odd td,
+    .google-visualization-atl .annotationsContainer .google-visualization-table-tr-even,
+    .google-visualization-atl .annotationsContainer .google-visualization-table-tr-even td {
+      background-color: black !important;
+    }
+
+    .google-visualization-atl .annotationsContainer .google-visualization-table-td {
+      border-bottom-width: 0 !important;
+    }
+
+  /* Custom Chart Styles */
+
+  .google-chart-wrapper {
+    /* padding: 15px; */
+  }
+
+  /* Toggle Menu */
+
+  .toggle-menu {
+    margin-top: 10px;
+  }
+
+  .toggle-menu select {
+    height: 30px;
+    padding: 5px;
+    border-radius: 15px;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: bold;
+    outline: none;
+  }
+
+  .toggle-menu select:hover {
+    cursor: pointer;
+  }
+
+/*** Summary Data ***/
+
+.summary-data-wrapper > .round-border {
+  border: 1px solid #212121;
+  padding: 30px;
+}
+
+.summary-data-wrapper {
+  /* padding: 15px; */
+}
+
+.summary-data b {
+  font-size: 2.5em;
+}
+
+/* Total Cases Section */
+
+.summary-data > .round-border {
+  border: 1px solid #212121;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.total-cases {
+  text-align: center;
+}
+
+  .total-cases > p:nth-child(1){
+    color: orange;
+  }
+
+  .total-cases > p:nth-child(2){
+    color: orange;
+  }
+
+/* Additional Stats Section */
+
+
+/*tr:nth-child(even) {
+  background-color: #dddddd;
+}*/

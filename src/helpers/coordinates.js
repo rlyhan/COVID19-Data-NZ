@@ -1,6 +1,6 @@
 import moment from 'moment'
 
-import { casesBetweenDates, convertDateToString } from './dates'
+import { events, casesBetweenDates, convertDateToString } from './dates'
 
 // Accepts the array and key
 const group = (array, key) => {
@@ -27,8 +27,18 @@ function sortGroupedCases(cases) {
   return orderedGroupedCases
 }
 
-// Confirmed new cases between given start and end dates
-export function confirmedCasesToCoords(cases, startDate, endDate) {
+function getEvent(date) {
+  for (var anEvent of events) {
+    if (convertDateToString(anEvent.date) === convertDateToString(date)) {
+      // return [anEvent.title, anEvent.description]
+      return anEvent.title
+    }
+  }
+  return undefined
+}
+
+// New cases between given start and end dates
+export function casesToCoords(cases, startDate, endDate) {
   var coords = []
 
   // Get cases filtered between start/end dates and group them by their report date
@@ -37,10 +47,13 @@ export function confirmedCasesToCoords(cases, startDate, endDate) {
   // Sort cases by date
   var orderedCasesByDate = sortGroupedCases(casesByDate)
 
-  // Create coordinates: Each coord being an array of [date, no. cases at date]
+  // Create coordinates: Each coord being an array of [date, no. cases at date, optional event]
   Object.entries(orderedCasesByDate).forEach(([key, value]) => {
-    coords.push([new Date(key), value.length])
+    let currentDate = new Date(key)
+    coords.push([currentDate, value.length, getEvent(currentDate)])
   })
+
+  console.log(coords)
 
   return coords
 }

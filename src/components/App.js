@@ -2,8 +2,13 @@ import React, { Component } from 'react';
 import moment from 'moment'
 
 import GoogleChart from './GoogleChart'
-import { fetchSummaryData, fetchConfirmedCases } from '../api/covid-data'
-import { confirmedCasesToCoords } from '../helpers/coordinates'
+import SummaryData from './SummaryData'
+import { fetchSummaryData, fetchCases } from '../api/covid-data'
+import { casesToCoords } from '../helpers/coordinates'
+
+const firstConfirmedCaseDay = new Date('2020-02-26')
+let today = new Date()
+// let thirtyDaysAgo = moment().subtract(30, 'days').toDate()
 
 class App extends Component {
 
@@ -12,35 +17,50 @@ class App extends Component {
     this.state = {
       currentPage: '',
       summaryData: null,
+      caseData: {},
       currentData: []
     }
   }
 
-  // Fetch summary data of cases and confirmed cases over last 30 days
   componentDidMount() {
     fetchSummaryData()
       .then(data => {
+        console.log(data)
         this.setState({ summaryData: data })
       })
 
-    fetchConfirmedCases()
+    fetchCases()
       .then(data => {
-        let today = new Date()
-        let thirtyDaysAgo = moment().subtract(30, 'days').toDate()
-        this.setState({ currentData: confirmedCasesToCoords(data, thirtyDaysAgo, today) })
+        this.setState({
+          caseData: data,
+          currentData: casesToCoords(data.confirmed.concat(data.probable), firstConfirmedCaseDay, today)
+        })
       })
       .catch(err => this.setState({ currentData: null }))
+  }
+
+  toggleData = e => {
+    if (e.target.value === 'both') {
+      this.setState({
+        currentData: casesToCoords(this.state.caseData.confirmed.concat(this.state.caseData.probable), firstConfirmedCaseDay, today)
+      })
+    } else if (e.target.value === 'confirmed') {
+      this.setState({
+        currentData: casesToCoords(this.state.caseData.confirmed, firstConfirmedCaseDay, today)
+      })
+    }
   }
 
   render() {
     return (
       <div className="App">
-        <GoogleChart data={this.state.currentData} />
-        { this.state.summaryData &&
-          <div>
-
-          </div>
-        }
+        <div className="header">
+          <h1>COVID-19 in NEW ZEALAND</h1>
+        </div>
+        <div className="site-content">
+          <GoogleChart data={this.state.currentData} toggle={this.toggleData} />
+          <SummaryData data={this.state.summaryData} />
+        </div>
       </div>
     );
   }

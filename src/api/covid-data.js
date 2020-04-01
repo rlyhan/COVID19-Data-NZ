@@ -36,17 +36,26 @@ export async function fetchSummaryData() {
   return summaryData
 }
 
-export async function fetchConfirmedCases() {
-
-  var cases = []
+export async function fetchCases() {
+  var allCases = {}
 
   const html = await axios.get('/api/healthgovt/confirmed')
   const $ = await cheerio.load(html.data, {normalizeWhitespace: false, xmlMode: true})
-  const dataTable = $('tbody')[0]
 
-  $(dataTable).find('tr').each((rowIndex, row) => {
+  const confirmed = $('tbody')[0]
+  const probable = $('tbody')[1]
 
-    let individualCase = {}
+  allCases.confirmed = extractTableData($, confirmed)
+  allCases.probable = extractTableData($, probable)
+
+  return allCases
+}
+
+function extractTableData(htmlLoader, table) {
+  const $ = htmlLoader
+  var cases = []
+
+  $(table).find('tr').each((rowIndex, row) => {
     let individualCaseData = []
 
     $(row).find('td').each((colIndex, col) => {
