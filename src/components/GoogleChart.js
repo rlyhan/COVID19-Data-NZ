@@ -11,14 +11,14 @@ class GoogleChart extends Component {
   }
 
   componentDidMount() {
-    if (this.chartWrapper) {
-      window.addEventListener('resize', this.drawChart, {capture: true})
-    }
+    // if (this.chartWrapper) {
+    //   window.addEventListener('resize', this.drawChart, {capture: true})
+    // }
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
-      console.log(this.props.data)
+      console.log("Passed to chart:", this.props.data)
     }
   }
 
@@ -54,11 +54,11 @@ class GoogleChart extends Component {
               {
                 type: "string",
                 label: "Event"
+              },
+              {
+                type: "string",
+                label: "Event description"
               }
-              // {
-              //   type: "string",
-              //   label: "Event description"
-              // }
             ]}
             chartEvents={[
               {
@@ -76,6 +76,7 @@ class GoogleChart extends Component {
               displayAnnotations: true,
               displayZoomButtons: false,
               width: '100%',
+              height: '300px',
               // height: '50vh',
               chart: {
                 backgroundColor: 'black',
@@ -94,18 +95,16 @@ class GoogleChart extends Component {
                 }
               },
               annotationsWidth: 25,
-              table: {
-                backgroundColor: 'pink'
-              }
+              thickness: '2'
             }}
             rootProps={{ 'data-testid': '2' }}
           />
         }
         </div>
         <div className="toggle-menu">
-          <select onChange={this.props.toggle.bind(this)}>
-            <option value="both">CONFIRMED + PROBABLE</option>
-            <option value="confirmed">CONFIRMED ONLY</option>
+          <select onChange={this.props.toggleCaseType.bind(this)}>
+            <option value="both">CONFIRMED + PROBABLE CASES</option>
+            <option value="confirmed">CONFIRMED CASES ONLY</option>
           </select>
         </div>
       </div>

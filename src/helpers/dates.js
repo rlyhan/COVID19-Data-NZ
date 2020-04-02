@@ -28,7 +28,7 @@ export const events = [
   },
   {
     title: "PM Jacinda Ardern announces alert level 3 effective immediately",
-    description: "48 hours given for non-essential businesses to shut",
+    description: "Level 4 set to commence in 48 hours",
     date: new Date('2020-03-23')
   },
   {

@@ -43,15 +43,15 @@ export async function fetchCases() {
   const $ = await cheerio.load(html.data, {normalizeWhitespace: false, xmlMode: true})
 
   const confirmed = $('tbody')[0]
-  const probable = $('tbody')[1]
+  const probable = $('tbody')[2]
 
-  allCases.confirmed = extractTableData($, confirmed)
-  allCases.probable = extractTableData($, probable)
+  allCases.confirmed = extractCaseData($, confirmed)
+  allCases.probable = extractCaseData($, probable)
 
   return allCases
 }
 
-function extractTableData(htmlLoader, table) {
+function extractCaseData(htmlLoader, table) {
   const $ = htmlLoader
   var cases = []
 

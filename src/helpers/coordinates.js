@@ -27,33 +27,49 @@ function sortGroupedCases(cases) {
   return orderedGroupedCases
 }
 
+// New cases between given start and end dates
+function sortAndGroupCases(cases, startDate, endDate) {
+  // Get cases filtered between start/end dates and group them by their report date
+  var casesByDate = group(casesBetweenDates(cases, startDate, endDate), 'reportDate')
+  // Sort case groups by date ascending
+  return sortGroupedCases(casesByDate)
+}
+
+// Get event information based on given date
 function getEvent(date) {
   for (var anEvent of events) {
     if (convertDateToString(anEvent.date) === convertDateToString(date)) {
-      // return [anEvent.title, anEvent.description]
-      return anEvent.title
+      return [anEvent.title, anEvent.description]
     }
   }
-  return undefined
+  return [undefined, undefined]
 }
 
-// New cases between given start and end dates
-export function casesToCoords(cases, startDate, endDate) {
+/* Get new cases between given start and end dates based on chosen data display type */
+
+// Get new cases each day
+export function getNewCaseCoordinates(cases, startDate, endDate) {
   var coords = []
+  let orderedCasesByDate = sortAndGroupCases(cases, startDate, endDate)
 
-  // Get cases filtered between start/end dates and group them by their report date
-  var casesByDate = group(casesBetweenDates(cases, startDate, endDate), 'reportDate')
-
-  // Sort cases by date
-  var orderedCasesByDate = sortGroupedCases(casesByDate)
-
-  // Create coordinates: Each coord being an array of [date, no. cases at date, optional event]
   Object.entries(orderedCasesByDate).forEach(([key, value]) => {
     let currentDate = new Date(key)
-    coords.push([currentDate, value.length, getEvent(currentDate)])
+    coords.push([currentDate, value.length, ...getEvent(currentDate)])
   })
+  return coords
+}
 
-  console.log(coords)
+// Get new cases each day on top of total cases overall
+export function getTotalCaseCoordinates(cases, startDate, endDate) {
+  var coords = []
+  let orderedCasesByDate = sortAndGroupCases(cases, startDate, endDate)
+  let totalCases = 0
+
+  Object.entries(orderedCasesByDate).forEach(([key, value]) => {
+    let currentDate = new Date(key)
+    totalCases += value.length
+    coords.push([currentDate, totalCases, ...getEvent(currentDate)])
+  })
 
   return coords
 }

@@ -7,7 +7,12 @@ body {
 }
 
 .header {
+  padding: 10px 0;
   text-align: center;
+}
+
+button:hover {
+  cursor: pointer;
 }
 
 .site-content {
@@ -19,8 +24,7 @@ body {
 @media (min-width: 768px) {
 
   .site-content {
-    padding: 0 10%;
-    /* grid-template-columns: repeat(2, 1fr); */
+    padding: 0 8%;
     grid-template-columns: 66% 33%;
     grid-column-gap: 10px;
   }
@@ -31,6 +35,36 @@ body {
   border-radius: 5px;
   padding: 5px;
 }
+
+/*** Navigation ***/
+
+.navigation {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+  /* Buttons */
+
+  .navigation button {
+    padding: 5px 10px;
+    margin: 0 5px;
+    border-radius: 15px;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: bold;
+    outline: none;
+    transition: 0.5s;
+  }
+
+  .navigation button[disabled] {
+    color: black;
+    background-color: #A9BCD0;
+    border-color: #A9BCD0;
+    transition: 0.5s;
+  }
+
+  .navigation button:hover {
+    border-color: white;
+  }
 
 /*** Google Chart ***/
 
@@ -64,9 +98,18 @@ body {
     .google-visualization-atl .annotationsContainer .google-visualization-table-tr-even td {
       background-color: black !important;
     }
-
     .google-visualization-atl .annotationsContainer .google-visualization-table-td {
       border-bottom-width: 0 !important;
+    }
+
+    /* Annotation title */
+    .google-visualization-table-table .title {
+      font-size: 1.2em !important;
+    }
+
+    /* Annotation description */
+    .google-visualization-table-table .description {
+      font-size: 1em !important;
     }
 
   /* Custom Chart Styles */
