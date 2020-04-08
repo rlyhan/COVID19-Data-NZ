@@ -22,16 +22,23 @@ export async function fetchSummaryData() {
     let caseType = Object.keys(summaryData)[rowIndex]
 
     $(row).find('td').each((colIndex, col) => {
-      let count = $(col).text()
-      if (count === "&nbsp;") count = 0
+      let count
+      if (colIndex === 2) {
+        count = $(col).find('b').text()
+      } else {
+        count = $(col).text()
+      }
 
-      if (colIndex === 1) {
-        summaryData[caseType].totalToDate = parseInt(count)
-      } else if (colIndex === 2) {
-        summaryData[caseType].newInLast24Hr = parseInt(count)
+      if (count === '&nbsp;') count = 0
+
+      if (colIndex === 0) {
+        summaryData[caseType].totalToDate = count
+      } else if (colIndex === 1) {
+        summaryData[caseType].newInLast24Hr = count
       }
     })
   })
+  // console.log(summaryData)
 
   return summaryData
 }
@@ -43,7 +50,7 @@ export async function fetchCases() {
   const $ = await cheerio.load(html.data, {normalizeWhitespace: false, xmlMode: true})
 
   const confirmed = $('tbody')[0]
-  const probable = $('tbody')[2]
+  const probable = $('tbody')[1]
 
   allCases.confirmed = extractCaseData($, confirmed)
   allCases.probable = extractCaseData($, probable)

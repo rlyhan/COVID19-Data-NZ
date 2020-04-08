@@ -11,6 +11,10 @@ body {
   text-align: center;
 }
 
+.loader {
+  text-align: center;
+}
+
 button:hover {
   cursor: pointer;
 }
@@ -19,6 +23,7 @@ button:hover {
   padding: 0 2.5%;
   display: grid;
   grid-template-columns: auto;
+  grid-row-gap: 10px;
 }
 
 @media (min-width: 768px) {
@@ -49,45 +54,58 @@ button:hover {
     padding: 5px 10px;
     margin: 0 5px;
     border-radius: 15px;
+    background-color: #A9BCD0;
+    border-color: #A9BCD0;
     font-family: 'Quicksand', sans-serif;
     font-weight: bold;
     outline: none;
     transition: 0.5s;
+    filter: brightness(145%);
   }
 
   .navigation button[disabled] {
+    background-color: #adbfd2;
+    border-color: #2e5cb8;
     color: black;
-    background-color: #A9BCD0;
-    border-color: #A9BCD0;
     transition: 0.5s;
+    /* filter: brightness(150%); */
   }
 
   .navigation button:hover {
-    border-color: white;
+    /* background-color: #2e5cb8; */
   }
 
 /*** Google Chart ***/
 
-  /* Actual Chart */
+  /* Annotation Chart */
 
-    /* Chart background: black and Chart border: grey */
-    #reactgooglegraph-1_AnnotationChart_borderDiv {
-      border-color: #212121;
+    /* Chart border: grey */
+    .google-visualization-atl .border {
+      border: 1px solid #212121 !important;
+    }
+
+    /* Chart background: black */
+    div[id*="_AnnotationChart_chartControlsContainer"] {
       background-color: black;
     }
 
-    /* Chart time filter background: black */
-    #reactgooglegraph-1_AnnotationChart_rangeControlContainer g rect[fill] {
+    /* Annotation container left border: grey */
+    .google-visualization-atl .annotationsTdContainer {
+      border-left: 1px solid #212121 !important;
+    }
+
+    /* Range control background: black */
+    div[id*="_AnnotationChart_rangeControlContainer"] g rect[fill] {
       fill: black;
     }
 
-    /* Chart time filter grid lines: grey */
-    #reactgooglegraph-1_AnnotationChart_rangeControlContainer g > g > g > rect[fill] {
+    /* Range control grid lines: grey */
+    div[id*="_AnnotationChart_rangeControlContainer"] g > g > g > rect[fill] {
       fill: #212121;
     }
 
-    /* Chart time filter edges: grey */
-    #reactgooglegraph-1_AnnotationChart_rangeControlContainer > div > div > div > svg > rect[fill] {
+    /* Range control edges: grey */
+    div[id*="_AnnotationChart_rangeControlContainer"] > div > div > div > svg > rect[fill] {
       /* fill: #212121; */
     }
 
@@ -112,6 +130,31 @@ button:hover {
       font-size: 1em !important;
     }
 
+    /* Annotation */
+    .google-visualization-table-td > span {
+      float: left;
+      clear: left;
+    }
+
+  /* Bar Chart */
+
+    /* Chart border: grey */
+    .google-bar-chart {
+      border: 1px solid #212121
+    }
+
+      /* Chart background: black */
+      .google-bar-chart > div > div > svg > g > rect[fill] {
+        fill: black;
+      }
+
+      /* Chart label text: white */
+      .google-bar-chart > div > div > svg > g > text {
+        fill: white;
+        font-family: 'Quicksand', sans-serif !important;
+        font-size: 9px !important;
+      }
+
   /* Custom Chart Styles */
 
   .google-chart-wrapper {
@@ -120,36 +163,104 @@ button:hover {
 
   /* Toggle Menu */
 
-  .toggle-menu {
-    margin-top: 10px;
+  .toggle-menu-wrapper {
+    margin: 5px 0;
   }
 
-  .toggle-menu select {
-    height: 30px;
-    padding: 5px;
-    border-radius: 15px;
-    font-family: 'Quicksand', sans-serif;
-    font-weight: bold;
-    outline: none;
-  }
+    .toggle-menu {
+      margin: 10px 14px 0 0;
+      display: inline-block;
+    }
 
-  .toggle-menu select:hover {
-    cursor: pointer;
-  }
+      /* Dropdown */
+
+      .toggle-menu select {
+        height: 29px;
+        padding: 5px;
+        border-radius: 3px;
+        font-size: 13px;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: bold;
+        outline: none;
+      }
+
+      .toggle-menu select:hover {
+        cursor: pointer;
+      }
+
+      /* Radio Button */
+
+      .radio-button {
+        display: inline-block;
+        position: relative;
+      }
+
+      .radio-button input[type="radio"] {
+        height: 20px;
+        width: 20px;
+        margin: 0;
+        position: absolute;
+        cursor: pointer;
+        z-index: 1;
+        opacity: 0;
+      }
+
+      .checkmark {
+        position: absolute;
+        height: 20px;
+        width: 20px;
+        margin: 0;
+        background-color: #eee;
+        border-radius: 50%;
+      }
+
+      /* On mouse-over, add a grey background color */
+      .radio-button:hover input ~ .checkmark {
+        background-color: #ccc;
+      }
+
+      /* When the radio button is checked, add a blue background */
+      .radio-button input:checked ~ .checkmark {
+        background-color: #2196F3;
+      }
+
+      /* Create the indicator (the dot/circle - hidden when not checked) */
+      .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+      }
+
+      /* Show the indicator (dot/circle) when checked */
+      .radio-button input:checked ~ .checkmark:after {
+        display: block;
+      }
+
+      /* Style the indicator (dot/circle) */
+      .radio-button .checkmark:after {
+        top: 5px;
+        left: 5px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: white;
+      }
+
+      /* Label text */
+      .label-text {
+        margin-left: 26px;
+      }
+
 
 /*** Summary Data ***/
 
 .summary-data-wrapper > .round-border {
   border: 1px solid #212121;
-  padding: 30px;
+  padding: 20px;
 }
 
 .summary-data-wrapper {
   /* padding: 15px; */
-}
-
-.summary-data b {
-  font-size: 2.5em;
 }
 
 /* Total Cases Section */
@@ -165,16 +276,53 @@ button:hover {
 }
 
   .total-cases > p:nth-child(1){
-    color: orange;
+    color: #2e5cb8;
+    font-size: 2em;
   }
 
   .total-cases > p:nth-child(2){
-    color: orange;
+    color: white;
+    font-size: 0.8em;
   }
 
-/* Additional Stats Section */
+  /* Recent Cases */
 
+  .recent-cases {
+    padding: 3px 7px;
+    margin: 10px 0;
+    font-size: 0.9em;
+  }
 
-/*tr:nth-child(even) {
-  background-color: #dddddd;
-}*/
+  /* Additional Stats Section */
+
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .stats div {
+    padding: 3px 7px;
+    margin: 3px;
+    border-radius: 30px;
+    background-color: #212121;
+    font-size: 0.9em;
+    font-weight: 800;
+  }
+
+  .stats div:nth-child(1) {
+    color: #2c7709;
+  }
+
+  .stats div:nth-child(2) {
+    color: #aa2308;
+  }
+
+  .stats div:nth-child(3) {
+    color: #967f1d;
+  }
+
+  /* DHB Chart */
+
+  .dhb-chart {
+    padding: 0 7px;
+  }

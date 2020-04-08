@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
-import Chart from 'react-google-charts'
+
+import AnnotationChart from './Charts/AnnotationChart'
+import BarChart from './Charts/BarChart'
 
 class GoogleChart extends Component {
 
@@ -7,10 +9,12 @@ class GoogleChart extends Component {
     super(props)
     this.state = {
       coords: []
+      // numberType: "total"
     }
   }
 
   componentDidMount() {
+    console.log(this.props)
     // if (this.chartWrapper) {
     //   window.addEventListener('resize', this.drawChart, {capture: true})
     // }
@@ -18,7 +22,9 @@ class GoogleChart extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
-      console.log("Passed to chart:", this.props.data)
+      console.log(this.props)
+      // this.setState({ numberType: this.props.numberType })
+      // console.log("Passed to chart:", this.props.data)
     }
   }
 
@@ -26,86 +32,46 @@ class GoogleChart extends Component {
     return document.querySelector('.google-chart-wrapper').offsetWidth * 0.85
   }
 
-  toggle = e => {
-
-  }
-
   render() {
+    // console.log(document.querySelector('.google-chart').offsetWidth)
     return (
       <div className="google-chart-wrapper">
         <div className="google-chart">
-        {this.props.data === [] ?
-          <div>Loading...</div> :
-          this.props.data === null ?
-          <div>Could not fetch data. Please try again.</div> :
-          <Chart
-            chartType="AnnotationChart"
-            loader={<div>Loading Chart...</div>}
-            rows={this.props.data}
-            columns={[
-              {
-                type: "date",
-                label: "Date"
-              },
-              {
-                type: "number",
-                label: "New COVID-19 cases recorded on this day"
-              },
-              {
-                type: "string",
-                label: "Event"
-              },
-              {
-                type: "string",
-                label: "Event description"
-              }
-            ]}
-            chartEvents={[
-              {
-                eventName: 'animationfinish',
-                callback: () => {
-                  console.log('Animation Finished')
-                },
-              },
-            ]}
-            getChartWrapper={chartWrapper => {
-        			this.chartWrapper = chartWrapper
-              chartWrapper.draw();
-            }}
-            options={{
-              displayAnnotations: true,
-              displayZoomButtons: false,
-              width: '100%',
-              height: '300px',
-              // height: '50vh',
-              chart: {
-                backgroundColor: 'black',
-                hAxis: {
-                  gridlines: {
-                    color: '#525252'
-                  }
-                },
-                vAxis: {
-                  gridlines: {
-                    color: '#525252'
-                  }
-                },
-                chartArea: {
-                  backgroundColor: 'black',
-                }
-              },
-              annotationsWidth: 25,
-              thickness: '2'
-            }}
-            rootProps={{ 'data-testid': '2' }}
-          />
-        }
+          {
+            this.props.chartType === 'annotation' ?
+            <AnnotationChart data={this.props.data} /> :
+            // this.props.chartType === 'bar' ?
+            // <BarChart data={this.props.data} /> :
+            null
+          }
         </div>
-        <div className="toggle-menu">
-          <select onChange={this.props.toggleCaseType.bind(this)}>
-            <option value="both">CONFIRMED + PROBABLE CASES</option>
-            <option value="confirmed">CONFIRMED CASES ONLY</option>
-          </select>
+        <div className="toggle-menu-wrapper">
+          {this.props.chartType === 'annotation' && <div className="toggle-menu">
+            <label className="radio-button" htmlFor="total">
+              <input type="radio"
+                     name="total"
+                     value="total"
+                     checked={this.props.numberType === "total"}
+                     onChange={e => this.props.toggleNumberType(e)} />
+              <span className="checkmark"></span>
+              <span className="label-text">TOTAL CASES</span>
+            </label>
+            <label className="radio-button" htmlFor="new" style={{marginLeft: '10px'}}>
+              <input type="radio"
+                     name="new"
+                     value="new"
+                     checked={this.props.numberType === "new"}
+                     onChange={e => this.props.toggleNumberType(e)} />
+              <span className="checkmark"></span>
+              <span className="label-text">NEW CASES</span>
+            </label>
+          </div>}
+          <div className="toggle-menu">
+            <select onChange={this.props.toggleCaseType.bind(this)}>
+              <option value="both">CONFIRMED + PROBABLE CASES</option>
+              <option value="confirmed">CONFIRMED CASES ONLY</option>
+            </select>
+          </div>
         </div>
       </div>
     );
