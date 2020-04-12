@@ -1,6 +1,9 @@
 import moment from 'moment'
 
-import { casesBetweenDates, convertDateToString } from './dates'
+import {
+  casesBetweenDates,
+  convertDateToString
+} from './dates'
 import { events } from './general-data'
 
 // Takes an array of objects and a key property of each object
@@ -17,14 +20,26 @@ const group = (array, key) => {
   }, {}) // empty object is the initial value for result object
 }
 
-// Get event information based on given date
-function getEvent(date) {
+// Adds events to case coordinates for chart
+function addEventsToCoords(coords) {
   for (var anEvent of events) {
-    if (convertDateToString(anEvent.date) === convertDateToString(date)) {
-      return [anEvent.title, anEvent.description]
+    var validCoord = coords.find(coord => convertDateToString(coord[0]) === convertDateToString(anEvent.date))
+    if (validCoord) {
+      // If a coordinate is found with a date matching event, add
+      // the event details to this coordinate
+      validCoord[2] = anEvent.title
+      validCoord[3] = anEvent.description
+    } else {
+      // Else create a new coordinate with a number of cases from coordinate of
+      // nearest preceding date and append to coordinate array
+      // var precedingCoord = coords.reduce((coordA, coordB) =>
+      //   (Math.abs(anEvent.date-coordA[0]) < Math.abs(anEvent.date-coordB[0])) ? coordA : coordB)
+      // Else if no coordinate found, add new coordinate with event details and zero cases
+      coords.push([anEvent.date, 0, anEvent.title, anEvent.description])
     }
   }
-  return [undefined, undefined]
+  // Make sure coordinate array is in order before returning
+  return coords.sort((a, b) => a[0] - b[0])
 }
 
 /* HELPERS FOR CASES GROUPED BY DATE */
@@ -98,11 +113,14 @@ function getTotalCaseCoordinatesAnnotation(cases, startDate, endDate) {
   let orderedCasesByDate = sortAndGroupCasesByDate(cases, startDate, endDate)
   let totalCases = 0
 
+  // In each coordinate, add the date and accumulative total cases on this date
   Object.entries(orderedCasesByDate).forEach(([dateOfCases, listOfCases]) => {
     let currentDate = new Date(dateOfCases)
     totalCases += listOfCases.length
-    coords.push([currentDate, totalCases, ...getEvent(currentDate)])
+    coords.push([currentDate, totalCases, undefined, undefined])
   })
+
+  coords = addEventsToCoords(coords)
   return coords
 }
 
@@ -111,10 +129,13 @@ function getNewCaseCoordinatesAnnotation(cases, startDate, endDate) {
   var coords = []
   let orderedCasesByDate = sortAndGroupCasesByDate(cases, startDate, endDate)
 
+  // In each coordinate, add the date and number of new cases on this date
   Object.entries(orderedCasesByDate).forEach(([dateOfCases, listOfCases]) => {
     let currentDate = new Date(dateOfCases)
-    coords.push([currentDate, listOfCases.length, ...getEvent(currentDate)])
+    coords.push([currentDate, listOfCases.length, undefined, undefined])
   })
+
+  coords = addEventsToCoords(coords)
   return coords
 }
 

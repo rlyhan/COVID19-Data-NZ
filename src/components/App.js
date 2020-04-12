@@ -38,8 +38,7 @@ class App extends Component {
       })
     // Fetch cases from API
     // Get coordinates for charts
-    // Initially shows ALL CASES
-    // ie. CONFIRMED + PROBABLE CASES / TOTAL NO. CASES
+    // Initially shows ALL CASES ie. CONFIRMED + PROBABLE CASES / TOTAL NO. CASES
     fetchCases()
       .then(data => {
         this.setState({ apiCaseData: data }, () => {
@@ -94,11 +93,11 @@ class App extends Component {
             googleChartData: getAnnotationCoordinates(this.state.chosenCaseSet, firstConfirmedCaseDay, today, this.state.chosenNumberType)
           })
           break;
-        // case "bar":
-        //   this.setState({
-        //     googleChartData: getBarCoordinates(this.state.chosenCaseSet)
-        //   })
-        //   break;
+        case "bar":
+          this.setState({
+            googleChartData: getBarCoordinates(this.state.chosenCaseSet)
+          })
+          break;
       }
     })
   }
@@ -136,21 +135,22 @@ class App extends Component {
     return (
       <div className="App">
         <div className="header">
-          <h1>COVID-19 in NEW ZEALAND</h1>
-        </div>
-        { this.state.googleChartData.length > 0 ?
-          <>
+          <div>
+            <h2>COVID-19 DATA - NEW ZEALAND</h2>
+          </div>
           <div className="navigation">
             <button value="annotation"
                     disabled={this.state.chosenChartType === "annotation"}
-                    onClick={e => this.toggleChartType(e)}>CASE GROWTH</button>
-            {/*<button value="bar"
+                    onClick={e => this.toggleChartType(e)}>CASE TIMELINE</button>
+            <button value="bar"
                     disabled={this.state.chosenChartType === "bar"}
-                    onClick={e => this.toggleChartType(e)}>CASES BY REGION</button>*/}
+                    onClick={e => this.toggleChartType(e)}>CASES BY REGION</button>
             <button value="geochart"
                     disabled={this.state.chosenChartType === "geochart"}
                     onClick={e => this.toggleChartType(e)}>MAP</button>
           </div>
+        </div>
+        { this.state.apiSummaryData !== null && this.state.googleChartData.length > 0 ?
           <div className="site-content">
             <GoogleChart data={this.state.googleChartData}
                          chartType={this.state.chosenChartType}
@@ -160,7 +160,6 @@ class App extends Component {
             <SummaryData data={this.state.apiSummaryData}
                          chartData={this.state.dhbChartData} />
           </div>
-          </>
         : <div className="loader"><img src={require('../images/Rolling-1.2s-100px.gif')} /></div> }
       </div>
     );

@@ -39,9 +39,9 @@ class GoogleChart extends Component {
         <div className="google-chart">
           {
             this.props.chartType === 'annotation' ?
-            <AnnotationChart data={this.props.data} /> :
-            // this.props.chartType === 'bar' ?
-            // <BarChart data={this.props.data} /> :
+            <AnnotationChart data={this.props.data} numberType={this.props.numberType} /> :
+            this.props.chartType === 'bar' ?
+            <BarChart data={this.props.data} /> :
             null
           }
         </div>

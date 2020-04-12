@@ -19,7 +19,7 @@ const AnnotationChart = props => {
           },
           {
             type: "number",
-            label: "New COVID-19 cases recorded on this day"
+            label: props.numberType === "total" ? "TOTAL COVID-19 CASES ON THIS DAY" : "NEW COVID-19 CASES RECORDED ON THIS DAY"
           },
           {
             type: "string",
@@ -38,12 +38,9 @@ const AnnotationChart = props => {
             },
           },
         ]}
-        // getChartWrapper={chartWrapper => {
-        //   this.chartWrapper = chartWrapper
-        //   chartWrapper.draw();
-        // }}
         options={{
           displayAnnotations: true,
+          // displayAnnotationsFilter: true,
           displayZoomButtons: false,
           animation: {
             startup: true,
@@ -51,7 +48,7 @@ const AnnotationChart = props => {
             duration: 5500
           },
           width: '100%',
-          height: '400px',
+          height: '450px',
           chart: {
             backgroundColor: 'black',
             hAxis: {
