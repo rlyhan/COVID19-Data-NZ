@@ -65,36 +65,57 @@ class SummaryData extends Component {
               <div className="stats">
                 <div className="stat-container">
                   <div className="total-count">
-                    <span>TOTAL RECOVERED</span>
+                    <span className="label">
+                      <span>
+                        <img src={require('../images/icons/recovered.png')} />
+                      </span>
+                      <span>
+                        <p>TOTAL</p><p>RECOVERED</p>
+                      </span>
+                    </span>
                     <span>{recoveredCases.totalToDate}</span>
-                    <span style={{
-                      color: Math.sign(recoveredCases.newInLast24Hr) === 1 ? 'green' :
-                             Math.sign(recoveredCases.newInLast24Hr) === -1 ? '#f1283a' :
-                             '#212121'
-                    }}> {this.getStatInfo(recoveredCases.newInLast24Hr)}</span>
                   </div>
+                  {/*<span className="new-count" style={{
+                    color: Math.sign(recoveredCases.newInLast24Hr) === 1 ? 'green' :
+                           Math.sign(recoveredCases.newInLast24Hr) === -1 ? '#f1283a' :
+                           '#212121'
+                  }}> {this.getStatInfo(recoveredCases.newInLast24Hr)}</span>*/}
                 </div>
                 <div className="stat-container">
                   <div className="total-count">
-                    <span>TOTAL DEATHS</span>
+                    <span className="label">
+                      <span>
+                        <img src={require('../images/icons/dead.png')} />
+                      </span>
+                      <span>
+                        <p>TOTAL</p><p>DEATHS</p>
+                      </span>
+                    </span>
                     <span>{deaths.totalToDate}</span>
-                    <span style={{
-                      color: Math.sign(deaths.newInLast24Hr) === 1 ? '#f1283a' :
-                             Math.sign(deaths.newInLast24Hr) === -1 ? 'green' :
-                             '#212121'
-                    }}>{this.getStatInfo(deaths.newInLast24Hr)}</span>
                   </div>
+                  {/*<span className="new-count" style={{
+                    color: Math.sign(deaths.newInLast24Hr) === 1 ? '#f1283a' :
+                           Math.sign(deaths.newInLast24Hr) === -1 ? 'green' :
+                           '#212121'
+                  }}>{this.getStatInfo(deaths.newInLast24Hr)}</span>*/}
                 </div>
                 <div className="stat-container">
                   <div className="total-count">
-                    <span>CURRENTLY HOSPITALISED</span>
+                    <span className="label">
+                      <span>
+                        <img src={require('../images/icons/hospital.png')} />
+                      </span>
+                      <span>
+                        <p>CURRENTLY</p><p>HOSPITALISED</p>
+                      </span>
+                    </span>
                     <span>{hospitalCases.totalToDate}</span>
-                    <span style={{
-                      color: Math.sign(hospitalCases.newInLast24Hr) === 1 ? '#f1283a' :
-                             Math.sign(hospitalCases.newInLast24Hr) === -1 ? 'green' :
-                             '#212121'
-                    }}>{this.getStatInfo(hospitalCases.newInLast24Hr)}</span>
                   </div>
+                  {/*<span className="new-count" style={{
+                    color: Math.sign(hospitalCases.newInLast24Hr) === 1 ? '#f1283a' :
+                           Math.sign(hospitalCases.newInLast24Hr) === -1 ? 'green' :
+                           '#212121'
+                  }}>{this.getStatInfo(hospitalCases.newInLast24Hr)}</span>*/}
                 </div>
               </div>
               <div className="calendar">
@@ -106,7 +127,7 @@ class SummaryData extends Component {
                   HEALTH.GOVT.NZ</a>.
                 </p>
                 <p>
-                  GRAPH SHOWING DATA AS OF 9AM, 12 APRIL, 2020.
+                  GRAPH SHOWING DATA AS OF 9AM, 14 APRIL, 2020.
                 </p>
                 <p>THIS SITE IS NOT AN OFFICIAL DATA SOURCE AND MAY NOT BE UP TO DATE.</p>
               </div>

@@ -144,7 +144,7 @@ class App extends Component {
                     onClick={e => this.toggleChartType(e)}>CASE TIMELINE</button>
             <button value="bar"
                     disabled={this.state.chosenChartType === "bar"}
-                    onClick={e => this.toggleChartType(e)}>CASES BY REGION</button>
+                    onClick={e => this.toggleChartType(e)}>STATISTICS</button>
             <button value="geochart"
                     disabled={this.state.chosenChartType === "geochart"}
                     onClick={e => this.toggleChartType(e)}>MAP</button>
@@ -152,11 +152,13 @@ class App extends Component {
         </div>
         { this.state.apiSummaryData !== null && this.state.googleChartData.length > 0 ?
           <div className="site-content">
-            <GoogleChart data={this.state.googleChartData}
-                         chartType={this.state.chosenChartType}
-                         numberType={this.state.chosenNumberType}
-                         toggleNumberType={this.toggleNumberType}
-                         toggleCaseType={this.toggleCaseType} />
+            <div className="google-chart-wrapper">
+              <GoogleChart data={this.state.googleChartData}
+                           chartType={this.state.chosenChartType}
+                           numberType={this.state.chosenNumberType}
+                           toggleNumberType={this.toggleNumberType}
+                           toggleCaseType={this.toggleCaseType} />
+            </div>
             <SummaryData data={this.state.apiSummaryData}
                          chartData={this.state.dhbChartData} />
           </div>

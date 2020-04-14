@@ -1,7 +1,9 @@
 import React from 'react'
+import ReactDOM from 'react-dom';
 import Chart from 'react-google-charts'
 
 const AnnotationChart = props => {
+  console.log(props)
   return (
     <>
     { props.data === [] ?
@@ -48,7 +50,8 @@ const AnnotationChart = props => {
             duration: 5500
           },
           width: '100%',
-          height: '450px',
+          height: '65vh',
+          minHeight: '300px',
           chart: {
             backgroundColor: 'black',
             hAxis: {

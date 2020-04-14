@@ -9,37 +9,26 @@ class GoogleChart extends Component {
     super(props)
     this.state = {
       coords: []
-      // numberType: "total"
     }
   }
 
   componentDidMount() {
-    console.log(this.props)
-    // if (this.chartWrapper) {
-    //   window.addEventListener('resize', this.drawChart, {capture: true})
-    // }
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
       console.log(this.props)
-      // this.setState({ numberType: this.props.numberType })
-      // console.log("Passed to chart:", this.props.data)
     }
   }
 
-  setHeight = () => {
-    return document.querySelector('.google-chart-wrapper').offsetWidth * 0.85
-  }
-
   render() {
-    // console.log(document.querySelector('.google-chart').offsetWidth)
     return (
-      <div className="google-chart-wrapper">
+      <>
         <div className="google-chart">
           {
             this.props.chartType === 'annotation' ?
-            <AnnotationChart data={this.props.data} numberType={this.props.numberType} /> :
+            <AnnotationChart data={this.props.data}
+                             numberType={this.props.numberType} /> :
             this.props.chartType === 'bar' ?
             <BarChart data={this.props.data} /> :
             null
@@ -73,7 +62,7 @@ class GoogleChart extends Component {
             </select>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 
