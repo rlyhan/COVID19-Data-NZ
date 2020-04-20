@@ -3,7 +3,10 @@ import ReactDOM from 'react-dom';
 import Chart from 'react-google-charts'
 
 const AnnotationChart = props => {
-  console.log(props)
+  let chartHeight
+  if (window.screen.width > window.screen.height) chartHeight = '70vh'
+  else chartHeight = '50vh'
+
   return (
     <>
     { props.data === [] ?
@@ -21,7 +24,7 @@ const AnnotationChart = props => {
           },
           {
             type: "number",
-            label: props.numberType === "total" ? "TOTAL COVID-19 CASES ON THIS DAY" : "NEW COVID-19 CASES RECORDED ON THIS DAY"
+            label: props.numberType === "total" ? "TOTAL COVID-19 CASES REPORTED ON THIS DAY" : "NEW COVID-19 CASES RECORDED ON THIS DAY"
           },
           {
             type: "string",
@@ -50,7 +53,7 @@ const AnnotationChart = props => {
             duration: 5500
           },
           width: '100%',
-          height: '65vh',
+          height: chartHeight,
           minHeight: '300px',
           chart: {
             backgroundColor: 'black',

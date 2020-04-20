@@ -10,8 +10,10 @@
     "cheerio": "^1.0.0-rc.3",
     "concurrently": "^5.1.0",
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jquery": "^3.4.1",
+    "mapbox-gl": "^1.9.1",
     "moment": "^2.24.0",
     "nodemon": "^2.0.2",
     "react": "^16.13.1",
@@ -44,5 +46,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "devDependencies": {}
 }

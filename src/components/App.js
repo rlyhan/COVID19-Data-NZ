@@ -23,7 +23,7 @@ class App extends Component {
       googleChartData: [],
       dhbChartData: [], // Coords for barchart of DHB cases in summary data sidebar
       chosenCaseSet: [],  // Array of selected cases to be sent as co-ords
-      chosenChartType: "annotation", // Tells which chart to show on page, ie. ANNOTATION / GEOCHART
+      chosenChartType: "annotation", // Tells which chart to show on page, ie. ANNOTATION / MAP
       chosenCaseType: "both", // Tells whether to get CONFIRMED + PROBABLE / CONFIRMED ONLY cases
       chosenNumberType: "total" // Tells which co-ordinates to get, ie. TOTAL or NEW
       // chosenDHB: "nationwide" // ie. NATIONWIDE / AUCKLAND / CANTERBURY / etc
@@ -142,12 +142,12 @@ class App extends Component {
             <button value="annotation"
                     disabled={this.state.chosenChartType === "annotation"}
                     onClick={e => this.toggleChartType(e)}>CASE TIMELINE</button>
+            <button value="map"
+                    disabled={this.state.chosenChartType === "map"}
+                    onClick={e => this.toggleChartType(e)}>MAP</button>
             <button value="bar"
                     disabled={this.state.chosenChartType === "bar"}
                     onClick={e => this.toggleChartType(e)}>STATISTICS</button>
-            <button value="geochart"
-                    disabled={this.state.chosenChartType === "geochart"}
-                    onClick={e => this.toggleChartType(e)}>MAP</button>
           </div>
         </div>
         { this.state.apiSummaryData !== null && this.state.googleChartData.length > 0 ?
@@ -157,7 +157,8 @@ class App extends Component {
                            chartType={this.state.chosenChartType}
                            numberType={this.state.chosenNumberType}
                            toggleNumberType={this.toggleNumberType}
-                           toggleCaseType={this.toggleCaseType} />
+                           toggleCaseType={this.toggleCaseType}
+                           chartHeight={this.state.chartHeight} />
             </div>
             <SummaryData data={this.state.apiSummaryData}
                          chartData={this.state.dhbChartData} />

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 import AnnotationChart from './Charts/AnnotationChart'
 import BarChart from './Charts/BarChart'
+import Mapbox from './Charts/Mapbox'
 
 class GoogleChart extends Component {
 
@@ -31,6 +32,8 @@ class GoogleChart extends Component {
                              numberType={this.props.numberType} /> :
             this.props.chartType === 'bar' ?
             <BarChart data={this.props.data} /> :
+            this.props.chartType === 'map' ?
+            <Mapbox /> :
             null
           }
         </div>

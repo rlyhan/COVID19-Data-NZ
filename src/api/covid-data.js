@@ -57,20 +57,21 @@ export async function fetchCases() {
 function extractCaseData(apiData) {
   var cases = []
   apiData.forEach(function(currentValue) {
+    let date = currentValue['Date of report'].split('/')
     cases.push({
-      "reportDate": new Date(currentValue['Date of report']),
+      "reportDate": new Date(`${date[2]}-${date[1]}-${date[0]}`),
       "sex": currentValue['Sex'] ? currentValue['Sex'] : "N/A",
       "ageGroup": currentValue['Age group'] ? currentValue['Age group'] : "N/A",
       "districtHealthBoard": currentValue['DHB'] ? currentValue['DHB'] : "N/A",
-      "overseas": currentValue['International travel'] === "Yes" ? true :
-                  currentValue['International travel'] === "No" ? false :
+      "overseas": currentValue['Overseas travel'] === "Yes" ? true :
+                  currentValue['Overseas travel'] === "No" ? false :
                   "N/A",
       "lastCountryBeforeNZ": currentValue['Last country before return'] ?
                              currentValue['Last country before return'] : "N/A",
       "flightNumber": currentValue['Flight number'] ? currentValue['Flight number'] : "N/A",
       "departureDate": currentValue['Flight departure date'] ?
                        new Date(currentValue['Flight departure date']) : "N/A",
-      "arrivalDate": currentValue['Flight departure date'] ?
+      "arrivalDate": currentValue['Arrival date'] ?
                      new Date(currentValue['Arrival date']) : "N/A"
     })
   })

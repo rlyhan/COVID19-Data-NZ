@@ -2,6 +2,9 @@ import React from 'react'
 import Chart from 'react-google-charts'
 
 const BarChart = props => {
+  let chartHeight
+  if (window.screen.width > window.screen.height) chartHeight = '70vh'
+  else chartHeight = '50vh'
   return (
     <>
     { props.data === [] ?
@@ -28,7 +31,7 @@ const BarChart = props => {
             duration: 1500
           },
           width: '100%',
-          height: '500px',
+          height: chartHeight,
           // theme: 'material',
           bars: 'horizontal',
           axes: {

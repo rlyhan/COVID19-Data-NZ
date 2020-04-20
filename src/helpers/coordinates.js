@@ -81,12 +81,13 @@ function sortAndGroupCasesByDHB(cases) {
 }
 
 // Sorts grouped cases object (DHB keys with array of case objects)
-// in alphabetical order of DHB
+// in order of number of cases
 function sortDHBGroupedCases(cases) {
   var orderedGroupedCases = {}
+  console.log(cases)
   Object.keys(cases).sort(function(a, b) {
-    if (a > b) return 1
-    if (b > a) return -1
+    if (cases[a].length < cases[b].length) return 1
+    if (cases[b].length < cases[a].length) return -1
     return 0
   }).forEach((key) => {
     orderedGroupedCases[key] = cases[key]
@@ -119,7 +120,6 @@ function getTotalCaseCoordinatesAnnotation(cases, startDate, endDate) {
     totalCases += listOfCases.length
     coords.push([currentDate, totalCases, undefined, undefined])
   })
-
   coords = addEventsToCoords(coords)
   return coords
 }

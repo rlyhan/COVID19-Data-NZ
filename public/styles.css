@@ -10,8 +10,29 @@ button:hover {
   cursor: pointer;
 }
 
+/*** Loading Icon ***/
+
 .loader {
   text-align: center;
+}
+
+/*** Scrollbar ***/
+
+/* Width */
+::-webkit-scrollbar {
+  width: 7px;
+  background: #0d0d0d;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #212121;
+  border-radius: 10px;
 }
 
 /*** Header ***/
@@ -28,8 +49,6 @@ button:hover {
 
   .header h2 {
     color: white;
-    background-color: #2e5cb8;
-    padding: 5px 8px;
   }
 
   /* Navigation */
@@ -72,7 +91,7 @@ button:hover {
 
       .navigation button:not([disabled]):hover:after {
         opacity: 1;
-        animation: center-grow 500ms;
+        animation: center-grow 200ms;
         animation-fill-mode: forwards;
       }
 
@@ -389,49 +408,76 @@ button:hover {
     border: 1px solid #212121;
     background-color: #0d0d0d;
     display: grid;
-    grid-template-columns: 100%;
+    grid-template-columns: 80%;
     justify-content: center;
-    /* display: flex;
-    flex-wrap: wrap; */
   }
 
-  @media (min-width: 410px) {
-    .stats {
-      grid-template-columns: 50%;
-    }
-  }
-
-  @media (min-width: 875px) {
-    .stats {
-      grid-template-columns: 90%;
-    }
-  }
-
-  @media (min-width: 1045px) {
-    .stats {
-      grid-template-columns: 80%;
-    }
-  }
-
-  @media (min-width: 1180px) {
+  @media (min-width: 310px) {
     .stats {
       grid-template-columns: 70%;
     }
   }
 
-  @media (min-width: 1290px) {
+  @media (min-width: 350px) {
     .stats {
       grid-template-columns: 60%;
     }
   }
 
-  @media (min-width: 1440px) {
+  @media (min-width: 400px) {
     .stats {
       grid-template-columns: 50%;
     }
   }
 
-  @media (min-width: 1510px) {
+  @media (min-width: 500px) {
+    .stats {
+      grid-template-columns: 33% 33% 33%;
+    }
+  }
+
+  /* Portrait */
+
+  @media (min-width: 870px) {
+    .stats {
+      grid-template-columns: 28% 28% 28%;
+    }
+  }
+
+
+  /* Landscape */
+
+  @media (min-width: 875px) and (orientation: landscape) {
+    .stats {
+      grid-template-columns: 100%;
+    }
+  }
+
+  @media (min-width: 1045px) and (orientation: landscape) {
+    .stats {
+      grid-template-columns: 90%;
+    }
+  }
+
+  @media (min-width: 1180px) and (orientation: landscape) {
+    .stats {
+      grid-template-columns: 80%;
+    }
+  }
+
+  @media (min-width: 1290px) and (orientation: landscape) {
+    .stats {
+      grid-template-columns: 70%;
+    }
+  }
+
+  @media (min-width: 1440px) and (orientation: landscape) {
+    .stats {
+      grid-template-columns: 70%;
+    }
+  }
+
+  @media (min-width: 1510px) and (orientation: landscape) {
     .stats {
       grid-template-columns: 50% 50%;
     }
@@ -454,7 +500,6 @@ button:hover {
     }
 
     .stat-container:nth-child(2) {
-      /* color: #E09F3E;  */
       color: #E85F5C;
     }
 
@@ -475,7 +520,6 @@ button:hover {
     }
 
       .total-count > span:nth-child(1) {
-        /* padding-right: 5px; */
         background-color: #212121;
         font-size: 0.6em;
         text-align: left;
@@ -516,18 +560,6 @@ button:hover {
       text-align: left;
       align-self: center;
     }
-
-  @media (min-width: 875px) {
-
-    /* .recent-cases {
-      text-align: left;
-    } */
-
-    .stat-container {
-      /* width: 100%; */
-    }
-
-  }
 
   /* Calendar */
 
