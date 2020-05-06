@@ -3,10 +3,16 @@ import mapboxgl from 'mapbox-gl'
 import axios from 'axios'
 
 import { dhbList } from '../../helpers/general-data'
+import { sortAndGroupCasesByDHB } from '../../helpers/coordinates'
+import { getRegularCaseString } from '../../helpers/general-helpers'
+import { addDHBRegions, createPointsSource, showDHBNames } from '../../helpers/mapbox/main-data'
+import { changeDisplayData } from '../../helpers/mapbox/counters'
+
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN
-
 var chartHeight
+
+const camelToSpaceCase = str => str.replace(/[A-Z]/g, letter => ` ${letter.toLowerCase()}`)
 
 class Mapbox extends Component {
 
@@ -15,151 +21,185 @@ class Mapbox extends Component {
     this.state = {
       lng: 172.515,
       lat: -41.206,
-      zoom: 3.8
+      zoom: 4.2,
+      mapLoaded: false,
+      displayData: 'total'
     }
-    if (window.screen.width > window.screen.height) chartHeight = '70vh'
-    else chartHeight = '50vh'
+    if (window.screen.width > window.screen.height) chartHeight = '80vh'
+    else chartHeight = '70vh'
   }
 
   componentDidMount() {
+    var { data } = this.props
     const map = new mapboxgl.Map({
       container: this.mapContainer,
       style: 'mapbox://styles/rlyhan/ck98cd91l3zpm1imxqvljfg9y',
       center: [this.state.lng, this.state.lat],
       zoom: this.state.zoom
     })
+    // Add full screen button
+    map.addControl(new mapboxgl.FullscreenControl())
+
+    // On map load...
     var hoveredStateId = null
+    var currentPopup = null
     map.on('load', () => {
+      // Add the main data (mapped district health board regions)
       map.addSource('mapbox-dhb', {
         type: 'vector',
         url: 'mapbox://rlyhan.4ym0j96h'
-      });
-      // DHB BOUNDARY LINES
-      map.addLayer({
-        'id': 'dhb-data',
-        'type': 'line',
-        'source': 'mapbox-dhb',
-        'source-layer': 'statsnzdistrict-health-board--7z54ly',
-        'layout': {
-          'line-join': 'round',
-          'line-cap': 'round'
-        },
-        'paint': {
-          'line-color': '#2e5cb8',
-          'line-width': 1
-        }
-      });
-      // HOVER ON HIGHLIGHT
-      map.addLayer({
-        'id': 'dhb-highlight-fills',
-        'type': 'fill',
-        'source': 'mapbox-dhb',
-        'source-layer': 'statsnzdistrict-health-board--7z54ly',
-        'layout': {},
-        'paint': {
-          'fill-color': '#2e5cb8',
-          'fill-opacity': [
-            'case',
-            ['boolean', ['feature-state', 'hover'], false],
-            1,
-            0.2
-          ]
-        }
-      });
-      map.on('mousemove', 'dhb-highlight-fills', function(e) {
-        if (e.features.length > 0) {
-          if (hoveredStateId) {
-            map.setFeatureState({
-              source: 'mapbox-dhb',
-              sourceLayer: 'statsnzdistrict-health-board--7z54ly',
-              id: hoveredStateId
-            }, {
-              hover: false
-            });
-          }
-          hoveredStateId = e.features[0].id;
-          map.setFeatureState({
-            source: 'mapbox-dhb',
-            sourceLayer: 'statsnzdistrict-health-board--7z54ly',
-            id: hoveredStateId
-          }, {
-            hover: true
-          });
-        }
-      });
-      map.on('mouseleave', 'dhb-highlight-fills', function() {
-        if (hoveredStateId) {
-          map.setFeatureState({
-            source: 'mapbox-dhb',
-            sourceLayer: 'statsnzdistrict-health-board--7z54ly',
-            id: hoveredStateId
-          }, {
-            hover: false
-          });
-        }
-        hoveredStateId = null;
-      });
-      // POINTS
-      map.addSource('points', {
-        'type': 'geojson',
-        'data': {
-          'type': 'FeatureCollection',
-          'features': dhbList.map(function(dhb) {
-            return {
-              'type': 'Feature',
-              'geometry': {
-                'type': 'Point',
-                'coordinates': [
-                  dhb.lng,
-                  dhb.lat
-                ]
-              },
-              'properties': {
-                'title': dhb.name.toUpperCase(),
-                'icon': 'harbor'
-              }
-            }
-          })
-        }
-      });
-      map.addLayer({
-        'id': 'points',
-        'type': 'symbol',
-        'source': 'points',
-        'layout': {
-          // get the icon name from the source's "icon" property
-          // concatenate the name to get an icon from the style's sprite sheet
-          'icon-image': 'circle-white-2',
-          'icon-size': 0.35,
-          // get the title name from the source's "title" property
-          'text-field': ['get', 'title'],
-          'text-size': 12,
-          // 'text-font': ['Quicksand', sans-serif'],
-          'text-offset': [0, 0.6],
-          'text-anchor': 'top'
-        },
-        'paint': {
-          'text-color': 'white'
-        }
-      });
-    })
-    map.on('move', () => {
-      this.setState({
-        lng: map.getCenter().lng.toFixed(4),
-        lat: map.getCenter().lat.toFixed(4),
-        zoom: map.getZoom().toFixed(2)
       })
+      addDHBRegions(map, hoveredStateId)
+      createPointsSource(map)
+      changeDisplayData(this.state.displayData, map, data, dhbList)
     })
+
+    // Create filters
+    var filterBox = document.querySelector('.map-filter-box')
+    if (document.querySelector('.map-filters')) filterBox.removeChild(document.querySelector('.map-filters'))
+    var filterList = document.createElement('div')
+    filterList.className = 'map-filters'
+    filterBox.appendChild(filterList)
+    var displayDataNames = ['districtHealthBoardName', 'total', 'last24Hours', 'recovered', 'deceased']
+    displayDataNames.forEach(function(displayData) {
+      // Label
+      var label = document.createElement('label')
+      label.className = 'radio-button'
+      label.htmlFor = displayData
+      // Radio button
+      var radio = document.createElement('input')
+      radio.type = 'radio'
+      radio.name = displayData
+      radio.value = displayData
+      radio.checked = this.state.displayData === displayData
+      radio.onchange = function() {
+        // Hide popup (if any)
+        if (currentPopup) currentPopup.remove()
+        // Uncheck other radio buttons
+        document.querySelectorAll('input').forEach(radioBtn => radioBtn.checked = false)
+        // Check this radio button
+        radio.checked = true
+        this.setState({ displayData: displayData })
+        // Change the data displayed
+        changeDisplayData(displayData, map, data, dhbList)
+      }.bind(this)
+      label.appendChild(radio)
+      // Checkmark
+      var checkmark = document.createElement('span')
+      checkmark.className = 'checkmark'
+      label.appendChild(checkmark)
+      // Label text
+      var labelText = document.createElement('span')
+      labelText.className = 'label-text'
+      labelText.innerText = displayData === 'last24Hours' ? 'LAST 24 HOURS' : camelToSpaceCase(displayData).toUpperCase()
+      label.appendChild(labelText)
+      // Add to filter box
+      filterList.appendChild(label)
+      // If just created the DHB checkmark, add a label indicating CASE TYPE for the following filters
+      if (displayData === 'districtHealthBoardName') {
+        var caseTypesLabel = document.createElement('p')
+        caseTypesLabel.innerText = 'CASE TYPES'
+        filterList.appendChild(caseTypesLabel)
+      }
+    }.bind(this))
+    filterBox.style.display = 'block'
+
+    // Once map has loaded...
+    map.once('load', () => {
+      // Be able to move the map
+      map.on('move', () => {
+        this.setState({
+          lng: map.getCenter().lng.toFixed(4),
+          lat: map.getCenter().lat.toFixed(4),
+          zoom: map.getZoom().toFixed(2)
+        })
+      })
+      // Show popup on clicking DHB
+      map.on('click', 'points', function(e) {
+        // Remove current popup
+        if (currentPopup) currentPopup.remove()
+        // Center view upon popup
+        map.flyTo({ center: e.features[0].geometry.coordinates, zoom: 8 })
+        // Get coordinates and DHB name
+        var coordinates = e.features[0].geometry.coordinates.slice()
+        var title = getRegularCaseString(e.features[0].properties.title)
+        // Ensure that if the map is zoomed out such that multiple
+        // copies of the feature are visible, the popup appears
+        // over the copy being pointed to.
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360
+        }
+        // Place a popup
+        currentPopup = new mapboxgl.Popup({ className: 'popup' })
+          .setLngLat(coordinates)
+          .setHTML(getPopupHTML(title))
+          .addTo(map)
+      })
+      // Go to central marker on clicking an area of DHB
+      map.on('click', 'dhb-highlight-fills', function(e) {
+        // If clicked on area outside all DHBs, return
+        if (e.features[0].id >= 21) return
+        // Remove current popup
+        if (currentPopup) currentPopup.remove()
+        // Find out name of DHB of clicked area and go to its center
+        var clickedDHB = dhbList.find(dhb =>
+          dhb.name === getRegularCaseString(e.features[0]._vectorTileFeature.properties.DHB2015_Na)
+        )
+        var coordinates = [clickedDHB.lng, clickedDHB.lat]
+        map.flyTo({ center: coordinates, zoom: 8 })
+        // Place a popup
+        currentPopup = new mapboxgl.Popup({ className: 'popup' })
+          .setLngLat(coordinates)
+          .setHTML(getPopupHTML(clickedDHB.name))
+          .addTo(map)
+      })
+      function getPopupHTML(dhbName) {
+        var { active, deceased, last24Hours, recovered, total } = data[dhbName]
+        return `<div style="font-family: 'Quicksand', sans-serif; background-color: transparent;">
+                  <h3>${dhbName.toUpperCase()}</h3>
+                  <p style="font-weight: bold; font-size: 1em; color:#97AEDC; margin: 0">TOTAL CASES: ${total}</p>
+                  <p style="font-weight: bold; font-size: 1em; color:#E3C567; margin: 0">NEW IN LAST 24 HOURS: ${last24Hours}</p>
+                  <p style="font-weight: bold; font-size: 1em; color:#9BC995; margin: 0">RECOVERED: ${recovered}</p>
+                  <p style="font-weight: bold; font-size: 1em; color:#EF8F8D; margin: 0">DEAD: ${deceased}</p>
+                </div>
+                `
+      }
+    })
+    this.map = map
+  }
+
+  componentWillUnmount() {
+    this.map = null
+  }
+
+  toggleFilterBox = e => {
+    if (document.querySelector('.toggle-container').classList.contains('down')) {
+      document.querySelector('.toggle-container').classList.remove('down')
+      document.querySelector('.toggle-container').classList.add('hidden')
+    } else if (document.querySelector('.toggle-container').classList.contains('hidden')) {
+      document.querySelector('.toggle-container').classList.add('down')
+      document.querySelector('.toggle-container').classList.remove('hidden')
+    }
   }
 
   render() {
     return (
       <>
-          <div ref={el => this.mapContainer = el}
+        <div className="mapContainer"
+             ref={el => this.mapContainer = el}
              style={{
                height: chartHeight,
-               border: '1px solid #212121'
-             }} />
+               border: '1px solid #212121',
+               boxSizing: 'border-box'
+             }}>
+          <div className="map-filter-box">
+            <div className="toggle-container hidden" onClick={(e) => this.toggleFilterBox(e)}>
+              <div className="toggle-filter-display"/>
+              <p style={{margin: 0}}>SELECT DATA TO DISPLAY</p>
+            </div>
+            <div className="map-filters"/>
+          </div>
+        </div>
       </>
     )
   }

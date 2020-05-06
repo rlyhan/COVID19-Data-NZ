@@ -1,54 +1,73 @@
 import React, { Component } from 'react';
-// import moment from 'moment'
 
-import GoogleChart from './GoogleChart'
+import VisualData from './VisualData'
 import SummaryData from './SummaryData'
-import { fetchSummaryData, fetchCases } from '../api/covid-data'
 import {
-  getAnnotationCoordinates,
-  getBarCoordinates
-} from '../helpers/coordinates'
+  fetchSummaryData,
+  fetchSummaryDHBData,
+  fetchSummaryTestingData,
+  fetchCases
+} from '../api/covid-data'
+import { getAnnotationCoordinates, getBarCoordinates } from '../helpers/coordinates'
+import { findNearestDateToToday } from '../helpers/dates'
 
+const today = new Date()
 const firstConfirmedCaseDay = new Date('2020-02-26')
-let today = new Date()
-// let thirtyDaysAgo = moment().subtract(30, 'days').toDate()
 
 class App extends Component {
 
   constructor() {
     super()
     this.state = {
+      invalidDataError: false,
       apiSummaryData: null,
-      apiCaseData: {},
+      apiDHBData: null,
+      apiTestingData: null,
+      apiCaseData: null,
+      chartDate: null,
       googleChartData: [],
-      dhbChartData: [], // Coords for barchart of DHB cases in summary data sidebar
       chosenCaseSet: [],  // Array of selected cases to be sent as co-ords
-      chosenChartType: "annotation", // Tells which chart to show on page, ie. ANNOTATION / MAP
-      chosenCaseType: "both", // Tells whether to get CONFIRMED + PROBABLE / CONFIRMED ONLY cases
-      chosenNumberType: "total" // Tells which co-ordinates to get, ie. TOTAL or NEW
-      // chosenDHB: "nationwide" // ie. NATIONWIDE / AUCKLAND / CANTERBURY / etc
+      chosenVisualType: "map", // Tells which chart to show on page, ie. ANNOTATION / MAP
+      chosenCaseType: "confirmed and probable", // Tells whether to get CONFIRMED + PROBABLE / CONFIRMED ONLY cases
+      chosenNumberType: "new" // Tells which co-ordinates to get, ie. TOTAL or NEW
     }
   }
 
   componentDidMount() {
-    // Fetch case summary data
+    // Fetch case summary data from API
     fetchSummaryData()
       .then(data => {
-        this.setState({ apiSummaryData: data })
+        if (data.error) this.setState({ invalidDataError: true })
+        else this.setState({ apiSummaryData: data })
       })
-    // Fetch cases from API
-    // Get coordinates for charts
-    // Initially shows ALL CASES ie. CONFIRMED + PROBABLE CASES / TOTAL NO. CASES
+    // Fetch summary DHB data from API
+    fetchSummaryDHBData()
+      .then(data => {
+        if (data.error) this.setState({ invalidDataError: true })
+        else this.setState({ apiDHBData: data })
+      })
+    // Fetch summary testing data from API
+    fetchSummaryTestingData()
+      .then(data => {
+        if (data.error) this.setState({ invalidDataError: true })
+        else this.setState({ apiTestingData: data })
+        console.log(data)
+      })
+    // Fetch detailed individual case data from API
+      // Get coordinates for charts
+      // Initially shows ALL CASES ie. CONFIRMED + PROBABLE CASES / TOTAL NO. CASES
     fetchCases()
       .then(data => {
-        this.setState({ apiCaseData: data }, () => {
-          this.setChartData()
-          this.setState({
-            dhbChartData: getBarCoordinates(this.getAllCases())
+        if (data.error) this.setState({ invalidDataError: true })
+        else {
+          this.setState({ apiCaseData: data }, () => {
+            this.setState({ chartDate: findNearestDateToToday(this.getAllCases()) }, () => {
+              this.setChartData()
+              // this.setState({ dhbChartData: getBarCoordinates(this.getAllCases()) })
+            })
           })
-        })
+        }
       })
-      .catch(err => this.setState({ googleChartData: null }))
   }
 
   // Helper: Gets ALL CASES from API data as array
@@ -64,7 +83,7 @@ class App extends Component {
   // Helper: Gets cases based on whether CONFIRMED or CONFIRMED + PROBABLE cases selected
   getCasesByType = () => {
     switch(this.state.chosenCaseType) {
-      case "both":
+      case "confirmed and probable":
         return this.getAllCases()
         break;
       case "confirmed":
@@ -73,13 +92,6 @@ class App extends Component {
     }
   }
 
-  // Helper: Filter selected cases by DHB
-  // getCasesByDHB = cases => {
-  //   return this.state.chosenDHB === "nationwide" ? cases : cases.filter(currentValue =>
-  //     currentValue.districtHealthBoard === this.state.chosenDHB
-  //   )
-  // }
-
   // Fetches coordinates for chart
   // 1. Initially have chosen case set in state (all or confirmed cases)
   // 2. Fetches coordinates based on chart type
@@ -87,25 +99,26 @@ class App extends Component {
     this.setState({
       chosenCaseSet: this.getCasesByType()
     }, () => {
-      switch(this.state.chosenChartType) {
-        case "annotation":
+      switch(this.state.chosenVisualType) {
+        case "case timeline":
           this.setState({
-            googleChartData: getAnnotationCoordinates(this.state.chosenCaseSet, firstConfirmedCaseDay, today, this.state.chosenNumberType)
+            googleChartData: getAnnotationCoordinates(this.state.chosenCaseSet, firstConfirmedCaseDay, this.state.chartDate, this.state.chosenNumberType)
           })
           break;
-        case "bar":
-          this.setState({
-            googleChartData: getBarCoordinates(this.state.chosenCaseSet)
-          })
+        // case "bar":
+        //   this.setState({
+        //     googleChartData: getBarCoordinates(this.state.chosenCaseSet)
+        //   })
+        //   break;
+        default:
           break;
       }
     })
   }
 
-  // Toggle between getting TOTAL NO. CASES / NO. OF NEW CASES (for annotation chart only)
+  // Toggle between getting TOTAL NO. CASES / NO. OF NEW CASES (for case timeline chart only)
   // Calls chart data setter
   toggleNumberType = e => {
-    // e.preventDefault()
     this.setState({ chosenNumberType: e.target.value }, () => this.setChartData())
   }
 
@@ -117,54 +130,65 @@ class App extends Component {
     this.setState({ chosenCaseType: e.target.value }, () => this.setChartData())
   }
 
-  // Toggles cases to show based on DHB
-  // Sets selected DHB as a filter
-  // Calls chart data setter
-  // toggleDHB = e => {
-  //   e.preventDefault()
-  //   this.setState({ chosenDHB: e.target.value }, () => this.setChartData())
-  // }
-
   // Toggle which chart to show
   toggleChartType = e => {
     e.preventDefault()
-    this.setState({ chosenChartType: e.target.value }, () => this.setChartData())
+    this.setState({ chosenVisualType: e.target.value }, () => this.setChartData())
   }
 
   render() {
     return (
-      <div className="App">
-        <div className="header">
-          <div>
-            <h2>COVID-19 DATA - NEW ZEALAND</h2>
+      <>
+      { this.state.invalidDataError === true ?
+        <div className="App">
+          <div className="header">
+            <div>
+              <h2>COVID-19 DATA - NEW ZEALAND</h2>
+            </div>
+            <div className="maintenance">WEBSITE UNDER MAINTENANCE. PLEASE CHECK AGAIN SOON!</div>
           </div>
-          <div className="navigation">
-            <button value="annotation"
-                    disabled={this.state.chosenChartType === "annotation"}
-                    onClick={e => this.toggleChartType(e)}>CASE TIMELINE</button>
-            <button value="map"
-                    disabled={this.state.chosenChartType === "map"}
-                    onClick={e => this.toggleChartType(e)}>MAP</button>
-            <button value="bar"
-                    disabled={this.state.chosenChartType === "bar"}
-                    onClick={e => this.toggleChartType(e)}>STATISTICS</button>
+        </div> :
+        this.state.apiSummaryData !== null && this.state.apiDHBData !== null &&
+        this.state.apiTestingData != null && this.state.apiCaseData != null?
+        <div className="App">
+          <div className="header">
+            <div>
+              <h2>COVID-19 DATA - NEW ZEALAND</h2>
+            </div>
+            <div className="navigation">
+              <button value="map"
+                      disabled={this.state.chosenVisualType === "map"}
+                      onClick={e => this.toggleChartType(e)}>MAP</button>
+              <button value="case timeline"
+                      disabled={this.state.chosenVisualType === "case timeline"}
+                      onClick={e => this.toggleChartType(e)}>CASE TIMELINE</button>
+              {/*<button value="bar"
+                      disabled={this.state.chosenVisualType === "bar"}
+                      onClick={e => this.toggleChartType(e)}>STATISTICS</button>*/}
+            </div>
+          </div>
+          <div className="site-content">
+          <div className="visual-data-wrapper">
+            <VisualData googleChartData={this.state.googleChartData}
+                        dhbData={this.state.apiDHBData}
+                        visualType={this.state.chosenVisualType}
+                        caseType={this.state.chosenCaseType}
+                        numberType={this.state.chosenNumberType}
+                        toggleNumberType={this.toggleNumberType}
+                        toggleCaseType={this.toggleCaseType}
+                        chartHeight={this.state.chartHeight} />
+          </div>
+            <div className="sidebar-wrapper">
+              <SummaryData summaryData={this.state.apiSummaryData}
+                           testingData={this.state.apiTestingData}
+                           chartDate={this.state.chartDate} />
+            </div>
           </div>
         </div>
-        { this.state.apiSummaryData !== null && this.state.googleChartData.length > 0 ?
-          <div className="site-content">
-            <div className="google-chart-wrapper">
-              <GoogleChart data={this.state.googleChartData}
-                           chartType={this.state.chosenChartType}
-                           numberType={this.state.chosenNumberType}
-                           toggleNumberType={this.toggleNumberType}
-                           toggleCaseType={this.toggleCaseType}
-                           chartHeight={this.state.chartHeight} />
-            </div>
-            <SummaryData data={this.state.apiSummaryData}
-                         chartData={this.state.dhbChartData} />
-          </div>
-        : <div className="loader"><img src={require('../images/Rolling-1.2s-100px.gif')} /></div> }
-      </div>
+      : <div className="loader">
+          <img src={require('../images/Rolling-1.2s-100px.gif')} />
+        </div> }
+      </>
     );
   }
 }

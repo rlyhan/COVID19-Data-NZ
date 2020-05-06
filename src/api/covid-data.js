@@ -2,7 +2,9 @@ import cheerio from 'cheerio'
 import axios from 'axios'
 
 import { convertStringToDate } from '../helpers/dates'
+import { getRegularCaseString } from '../helpers/general-helpers'
 
+// Fetches and returns data about overall numbers of COVID-19 cases nationwide
 export async function fetchSummaryData() {
 
   var summaryData = {
@@ -14,7 +16,7 @@ export async function fetchSummaryData() {
     deaths: {}
   }
 
-  const html = await axios.get('/api/healthgovt/summary')
+  const html = await axios.get('/api/healthgovt/current-data')
   const $ = await cheerio.load(html.data, {normalizeWhitespace: false, xmlMode: true})
   const dataTable = $('tbody')[0]
 
@@ -22,14 +24,22 @@ export async function fetchSummaryData() {
     let caseType = Object.keys(summaryData)[rowIndex]
 
     $(row).find('td').each((colIndex, col) => {
+
       let count
+      // Special case: Second row is a bold element
       if (colIndex === 2) {
         count = $(col).find('b').text()
       } else {
         count = $(col).text()
       }
-
+      // Remove commas so can be parsed as int
+      count = count.replace(',', '')
+      // Replace empty space character with 0
+      // Else if is a different, non-number character, set count as NaN
+      // Else parse count string into int
       if (count === '&nbsp;') count = 0
+      else if (isNaN(count)) count = NaN
+      else count = parseInt(count)
 
       if (colIndex === 0) {
         summaryData[caseType].totalToDate = count
@@ -39,14 +49,136 @@ export async function fetchSummaryData() {
     })
   })
 
+  // A series of checks to see if data format is valid
+  var dataIsInvalid = false
+  // Check each entry is a number, if not, data is invalid
+  Object.keys(summaryData).forEach(function(k) {
+    Object.entries(summaryData[k]).forEach(function(j) {
+      if (isNaN(j[1])) {
+        dataIsInvalid = true
+      }
+    })
+  })
+
+  if (dataIsInvalid) return { error: 'Data is invalid' }
   return summaryData
 }
 
+// Fetches and returns summary data about COVID-19 case figures in each district helth board
+export async function fetchSummaryDHBData() {
+
+  var dhbData = {}
+
+  const html = await axios.get('/api/healthgovt/current-data')
+  const $ = await cheerio.load(html.data, {normalizeWhitespace: false, xmlMode: true})
+  const dataTable = $('tbody')[1]
+
+  $(dataTable).find('tr').each((rowIndex, row) => {
+    let dhbObject = {}
+    let dhbName = ''
+    $(row).find('td').each((colIndex, col) => {
+      let colData = $(col).text()
+      if (colData === '&nbsp;') colData = 0
+
+      if (colIndex === 0) dhbName = getRegularCaseString(colData)
+      else if (colIndex === 1) dhbObject.active = parseInt(colData)
+      else if (colIndex === 2) dhbObject.recovered = parseInt(colData)
+      else if (colIndex === 3) dhbObject.deceased = parseInt(colData)
+      else if (colIndex === 4) dhbObject.total = parseInt(colData)
+      else if (colIndex === 5) dhbObject.last24Hours = parseInt(colData)
+    })
+    // Special cases for safe formatting
+    if (dhbName === 'Mid Central') dhbName = 'Midcentral'
+    if (dhbName === 'Tairāwhiti') dhbName = 'Tairawhiti'
+    if (dhbName === 'Waitematā') dhbName = 'Waitemata'
+    // Add DHB object of info to main object
+    if (Object.keys(dhbObject).length > 0) dhbData[dhbName] = dhbObject
+  })
+  delete dhbData.Total
+
+  // A series of checks to see if data format is valid
+  var dataIsInvalid = false
+  // Check each property (DHB name) matches the format of provided DHB list
+
+  // Check each entry in a DHB object is a number, if not, data is invalid
+  Object.keys(dhbData).forEach(function(k) {
+    Object.entries(dhbData[k]).forEach(function(j) {
+      if (isNaN(j[1])) {
+        dataIsInvalid = true
+      }
+    })
+  })
+  if (dataIsInvalid) return { error: 'Data is invalid' }
+
+  return dhbData
+}
+
+// Fetches and returns summary data about COVID-19 testing
+export async function fetchSummaryTestingData() {
+
+  var testingData = {
+    testedYesterday: {},
+    sevenDayAverage: {},
+    totalToDate: {},
+    suppliesInStock: {}
+  }
+
+  const html = await axios.get('/api/healthgovt/current-data')
+  const $ = await cheerio.load(html.data, {normalizeWhitespace: false, xmlMode: true})
+  const dataTable = $('tbody')[5]
+
+  $(dataTable).find('tr').each((rowIndex, row) => {
+
+    let testingStatisticObject = Object.keys(testingData)[rowIndex]
+    $(row).find('td').each((colIndex, col) => {
+
+      let colData = $(col).text()
+      if (colIndex === 0) {
+        // If column is number of tests
+        // Remove commas so can be parsed as int
+        let count = colData.replace(',', '')
+        // Replace empty space character with 0
+        // Else if is a different, non-number character, set count as NaN
+        // Else parse count string into int
+        if (count === '&nbsp;') count = 0
+        else if (isNaN(count)) count = NaN
+        else count = parseInt(count)
+        // Add to object
+        testingData[testingStatisticObject].testCount = count
+      } else if (colIndex === 1) {
+        // Else if column is date, just add to object
+        testingData[testingStatisticObject].date = colData
+      }
+
+    })
+  })
+
+  // A series of checks to see if data format is valid
+  var dataIsInvalid = false
+  // Check each property (DHB name) matches the format of provided DHB list
+
+  // Check each entry in test data (first column should be number,
+  // second column should be string) else data is invalid
+  Object.keys(testingData).forEach(function(k) {
+    Object.entries(testingData[k]).forEach(function(j, index) {
+      if (index === 0) {
+        if (isNaN(j[1])) dataIsInvalid = true
+      } else if (index === 1) {
+        if (typeof(j[1]) != 'string') {
+          dataIsInvalid = true
+        }
+      }
+    })
+  })
+  if (dataIsInvalid) return { error: 'Data is invalid' }
+
+  return testingData
+}
+
+// Fetches and returns entire list of each individual, detailed, COVID-19 case
 export async function fetchCases() {
   var allCases = {}
-
   const apiData = await axios.get('/api/healthgovt/allcases')
-  console.log(apiData.data)
 
   allCases.confirmed = extractCaseData(apiData.data.confirmed)
   allCases.probable = extractCaseData(apiData.data.probable)
@@ -54,6 +186,7 @@ export async function fetchCases() {
   return allCases
 }
 
+// Reads each COVID-19 case, formatting each case as a JSON object and pushing to array
 function extractCaseData(apiData) {
   var cases = []
   apiData.forEach(function(currentValue) {
@@ -75,55 +208,5 @@ function extractCaseData(apiData) {
                      new Date(currentValue['Arrival date']) : "N/A"
     })
   })
-  console.log(cases)
   return cases
 }
-
-/* ORIGINAL WEB SCRAPER TO FETCH CASE DATA (NO LONGER WORKS WITH CURRENT HEALTH.GOVT LAYOUT) */
-
-// export async function fetchCases() {
-//   var allCases = {}
-//
-//   const html = await axios.get('/api/healthgovt/allcases')
-//   const $ = await cheerio.load(html.data, {normalizeWhitespace: false, xmlMode: true})
-//
-//   const confirmed = $('tbody')[0]
-//   const probable = $('tbody')[1]
-//
-//   allCases.confirmed = extractCaseData($, confirmed)
-//   allCases.probable = extractCaseData($, probable)
-//
-//   console.log(allCases)
-//
-//   return allCases
-// }
-//
-// function extractCaseData(htmlLoader, table) {
-//   const $ = htmlLoader
-//   var cases = []
-//
-//   $(table).find('tr').each((rowIndex, row) => {
-//     let individualCaseData = []
-//
-//     $(row).find('td').each((colIndex, col) => {
-//       if ($(col).text() === "&nbsp;") individualCaseData.push("N/A")
-//       else if ($(col).text() === "Yes") individualCaseData.push(true)
-//       else if ($(col).text() === "No") individualCaseData.push(false)
-//       else individualCaseData.push($(col).text())
-//     })
-//
-//     cases.push({
-//       "reportDate": convertStringToDate(individualCaseData[0]),
-//       "sex": individualCaseData[1],
-//       "ageGroup": individualCaseData[2],
-//       "districtHealthBoard": individualCaseData[3],
-//       "overseas": individualCaseData[4],
-//       "lastCityBeforeNZ": individualCaseData[5],
-//       "flightNumber": individualCaseData[6],
-//       "departureDate": convertStringToDate(individualCaseData[7]),
-//       "arrivalDate": convertStringToDate(individualCaseData[8])
-//     })
-//   })
-//
-//   return cases
-// }

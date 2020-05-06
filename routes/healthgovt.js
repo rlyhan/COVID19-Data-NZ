@@ -12,7 +12,7 @@ const caseFile = XLSX.readFile('./src/all-cases.xlsx', {cellDates: true})
 const summary = 'https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-novel-coronavirus/covid-19-current-situation/covid-19-current-cases'
 
 /* Get overall case information in total + last 24 hours */
-router.get('/summary', (req, res) => {
+router.get('/current-data', (req, res) => {
   return axios.get(summary)
     .then(page => {
       res.send(page.data)

@@ -2,7 +2,8 @@ import moment from 'moment'
 
 import {
   casesBetweenDates,
-  convertDateToString
+  convertDateToString,
+  findNearestCoordinateToEvent
 } from './dates'
 import { events } from './general-data'
 
@@ -20,22 +21,32 @@ const group = (array, key) => {
   }, {}) // empty object is the initial value for result object
 }
 
-// Adds events to case coordinates for chart
-function addEventsToCoords(coords) {
+// Adds events to coordinates for chart
+function addEventsToCoords(coords, dataType) {
   for (var anEvent of events) {
-    var validCoord = coords.find(coord => convertDateToString(coord[0]) === convertDateToString(anEvent.date))
+    // Find valid coordinate by seeing if its date matches an event's date
+    var validCoord = coords.find(coord => convertDateToString(coord[0], 'simple') === convertDateToString(anEvent.date, 'simple'))
     if (validCoord) {
       // If a coordinate is found with a date matching event, add
       // the event details to this coordinate
       validCoord[2] = anEvent.title
       validCoord[3] = anEvent.description
     } else {
-      // Else create a new coordinate with a number of cases from coordinate of
-      // nearest preceding date and append to coordinate array
-      // var precedingCoord = coords.reduce((coordA, coordB) =>
-      //   (Math.abs(anEvent.date-coordA[0]) < Math.abs(anEvent.date-coordB[0])) ? coordA : coordB)
-      // Else if no coordinate found, add new coordinate with event details and zero cases
-      coords.push([anEvent.date, 0, anEvent.title, anEvent.description])
+      // Else, if a coordinate cannot be found with a date matching event...
+
+      // If showing total cases, create a new coordinate where its number of cases
+      // equals that of the nearest preceding coordinate
+      // (or the chart will show the number of cases on this event's date as 0!)
+
+      // Else, if showing new cases, create a new coordinate with just 0 cases
+      // (because no new cases were recorded on this event's date )
+
+      if (dataType === 'total') {
+        var precedingCoord = findNearestCoordinateToEvent(coords, anEvent.date)
+        coords.push([anEvent.date, precedingCoord[1], anEvent.title, anEvent.description])
+      } else if (dataType === 'new') {
+        coords.push([anEvent.date, 0, anEvent.title, anEvent.description])
+      }
     }
   }
   // Make sure coordinate array is in order before returning
@@ -60,7 +71,7 @@ function sortAndGroupCasesByDate(cases, startDate, endDate) {
 function sortDateGroupedCases(cases) {
   var orderedGroupedCases = {}
   Object.keys(cases).sort(function(a, b) {
-    return moment(convertDateToString(a)).diff(moment(convertDateToString(b)))
+    return moment(convertDateToString(a, 'simple')).diff(moment(convertDateToString(b, 'simple')))
   }).forEach((key) => {
     orderedGroupedCases[key] = cases[key]
   })
@@ -71,9 +82,8 @@ function sortDateGroupedCases(cases) {
 
 // Takes cases
 // Returns object with DHB as properties holding an array of all cases
-// reported from respective DHB
-// Sorted alphabetically by DHB
-function sortAndGroupCasesByDHB(cases) {
+// reported from respective DHB, sorted alphabetically by DHB
+export function sortAndGroupCasesByDHB(cases) {
   // Get cases grouped by their district health board
   var casesByDHB = group(cases, 'districtHealthBoard')
   // Sort case groups by DHB alphabetically
@@ -84,7 +94,6 @@ function sortAndGroupCasesByDHB(cases) {
 // in order of number of cases
 function sortDHBGroupedCases(cases) {
   var orderedGroupedCases = {}
-  console.log(cases)
   Object.keys(cases).sort(function(a, b) {
     if (cases[a].length < cases[b].length) return 1
     if (cases[b].length < cases[a].length) return -1
@@ -120,7 +129,13 @@ function getTotalCaseCoordinatesAnnotation(cases, startDate, endDate) {
     totalCases += listOfCases.length
     coords.push([currentDate, totalCases, undefined, undefined])
   })
-  coords = addEventsToCoords(coords)
+
+  // If the last coordinate's date is not the end date, add an extra coordinate
+  // with the end date and the current total
+  if (coords[coords.length-1][0] !== endDate) coords.push([endDate, totalCases, undefined, undefined])
+
+  // Add events to coordinates
+  coords = addEventsToCoords(coords, 'total')
   return coords
 }
 
@@ -135,7 +150,8 @@ function getNewCaseCoordinatesAnnotation(cases, startDate, endDate) {
     coords.push([currentDate, listOfCases.length, undefined, undefined])
   })
 
-  coords = addEventsToCoords(coords)
+  // Add events to coordinates
+  coords = addEventsToCoords(coords, 'new')
   return coords
 }
 

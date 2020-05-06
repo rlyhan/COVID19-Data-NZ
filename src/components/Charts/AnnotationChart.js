@@ -4,8 +4,8 @@ import Chart from 'react-google-charts'
 
 const AnnotationChart = props => {
   let chartHeight
-  if (window.screen.width > window.screen.height) chartHeight = '70vh'
-  else chartHeight = '50vh'
+  if (window.screen.width > window.screen.height) chartHeight = 'calc(80vh - 54px)'
+  else chartHeight = '70vh'
 
   return (
     <>
@@ -24,7 +24,7 @@ const AnnotationChart = props => {
           },
           {
             type: "number",
-            label: props.numberType === "total" ? "TOTAL COVID-19 CASES REPORTED ON THIS DAY" : "NEW COVID-19 CASES RECORDED ON THIS DAY"
+            label: props.numberType === "total" ? `TOTAL ${props.caseType.toUpperCase()} COVID-19 CASES TO THIS DAY` : `NEW ${props.caseType.toUpperCase()} COVID-19 CASES RECORDED ON THIS DAY`
           },
           {
             type: "string",
@@ -58,6 +58,10 @@ const AnnotationChart = props => {
           chart: {
             backgroundColor: 'black',
             hAxis: {
+              textStyle: {
+                color: 'white',
+                fontName: 'Quicksand'
+              },
               gridlines: {
                 color: '#525252'
               }
