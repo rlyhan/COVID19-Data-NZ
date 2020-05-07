@@ -3,8 +3,10 @@ import moment from 'moment'
 import { months } from './general-data'
 
 // let thirtyDaysAgo = moment().subtract(30, 'days').toDate()
-const firstConfirmedCaseDay = new Date('2020-02-26')
 const today = new Date()
+
+// Date of first confirmed case
+export const firstConfirmedCaseDay = new Date('2020-02-26')
 
 // Takes array of case objects
 // Finds and returns reportDate key value that is closest to today's date
@@ -24,7 +26,6 @@ export function findNearestCoordinateToEvent(coords, eventDate) {
   return coords.reduce(function (closestCoord, currentValue, currentIndex) {
     let currentCoordDiff = moment(eventDate).diff(moment(currentValue[0]))
     let closestCoordDiff = moment(eventDate).diff(moment(closestCoord[0]))
-    console.log(currentCoordDiff, currentValue[0])
     return (currentCoordDiff < closestCoordDiff && currentCoordDiff >= 1) ?
       currentValue : closestCoord
   })

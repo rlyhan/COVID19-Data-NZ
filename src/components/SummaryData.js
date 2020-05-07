@@ -1,40 +1,20 @@
 import React, { Component } from 'react'
 
-import BarChart from './Charts/BarChart'
 import { convertDateToString } from '../helpers/dates'
 
 class SummaryData extends Component {
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      coordinates: []
-    }
-  }
-
-  componentDidMount() {
-    console.log(this.props.summaryData)
-  }
-
-  componentDidUpdate() {
-    // this.setState({ coordinates: this.props.summaryData })
+  formatCount = (num, type) => {
+    // Make count string with CASES/CASE/NO CASES depending on number
+    return (num > 1) ? `${num} ${type} CASES` :
+           (num === 1) ? `${num} ${type} CASE` :
+           `NO ${type} CASES`
   }
 
   formatCountIncrease = num => {
-    // If over 1000, convert to 'K' format
-    // If over 1,000,000, convert to 'M' format
-    var countString = num
-    // if (num > 10000) {
-    //   num = (num * 0.001).toFixed(1)
-    //   countString = `${num}K`
-    // }
-    // Add plus or minus in front of count
-    switch(Math.sign(num)) {
-      case -1:
-        return `${countString.toLocaleString('en')} `
-      case 1:
-        return `+${countString.toLocaleString('en')} `
-    }
+    // Add plus or minus in front of count string
+    if (Math.sign(num) === -1) return `${num.toLocaleString('en')} `
+    else if (Math.sign(num) === 1) return `+${num.toLocaleString('en')} `
   }
 
   render() {
@@ -46,7 +26,8 @@ class SummaryData extends Component {
       deaths,
       hospitalCases
     } = this.props.summaryData
-    const { testingData } = this.props
+    const { dhbData, testingData } = this.props
+    var activeCases = Object.keys(dhbData).reduce(function(total, name) { return total + parseInt(dhbData[name].active)}, 0)
 
     return (
       <>
@@ -61,22 +42,28 @@ class SummaryData extends Component {
                 </p>
                 <p>{`${confirmedCases.totalToDate.toLocaleString('en')} CONFIRMED / ${probableCases.totalToDate.toLocaleString('en')} PROBABLE`}</p>
               </div>
+              <div className="active-cases">
+                <p>
+                  <span>
+                    <img className="active-cases-icon"
+                         alt="active-cases-icon"
+                         src={require('../images/icons/active-cases.png')}/>
+                  </span>
+                  <span>{this.formatCount(activeCases, 'ACTIVE')}</span>
+                </p>
+              </div>
               <div className="new-info">
                 <p>
                   {
-                    confirmedAndProbableCases.newInLast24Hr != 0 ?
+                    confirmedAndProbableCases.newInLast24Hr !== 0 ?
                     <>
                       <span>
                         <img className="new-case-arrow"
+                             alt="new-case-arrow"
                              style={{transform: confirmedAndProbableCases.newInLast24Hr > 0 ? 'rotate(180deg)' : 'rotate(0deg)'}}
                              src={require('../images/icons/new-case-arrow.png')}/>
                       </span>
-                      <span>
-                      {
-                        confirmedAndProbableCases.newInLast24Hr >= 1 ?
-                        ` ${confirmedAndProbableCases.newInLast24Hr} NEW CASES` : ` NO NEW CASES (${confirmedAndProbableCases.newInLast24Hr})`
-                      }
-                      </span>
+                      <span>{this.formatCount(confirmedAndProbableCases.newInLast24Hr, 'NEW')}</span>
                     </> :
                     <span>NO NEW CASES</span>
                   }
@@ -84,11 +71,13 @@ class SummaryData extends Component {
                 <ul>
                   {
                     confirmedCases.newInLast24Hr > 0 &&
-                    <li>{`${confirmedCases.newInLast24Hr} case(s) classified as confirmed`}</li>
+                    <li>
+                      {`${confirmedCases.newInLast24Hr} ${confirmedCases.newInLast24Hr > 1 ? 'cases' : 'case'} classified as confirmed`}
+                    </li>
                   }
                   {
                     probableCases.newInLast24Hr > 0 &&
-                    <li>{`${probableCases.newInLast24Hr} case(s) recorded as probable`}</li>
+                    <li>{`${probableCases.newInLast24Hr} ${probableCases.newInLast24Hr > 1 ? 'cases' : 'case'} recorded as probable`}</li>
                   }
                 </ul>
               </div>
@@ -98,17 +87,18 @@ class SummaryData extends Component {
             <div className="stat-container">
               <div className="label">
                 <span>
-                  <img src={require('../images/icons/recovered.png')} />
+                  <img alt="recovered" src={require('../images/icons/recovered.png')} />
                 </span>
                 <span>RECOVERED</span>
               </div>
               <div className="count">
                 <span>{`${recoveredCases.totalToDate.toLocaleString('en')}`}</span>
                 {
-                  recoveredCases.newInLast24Hr != 0 ?
+                  recoveredCases.newInLast24Hr !== 0 ?
                   <span>
                     <span>{this.formatCountIncrease(recoveredCases.newInLast24Hr)}</span>
                     <img className="change-arrow"
+                         alt="change-arrow"
                          style={{transform: recoveredCases.newInLast24Hr > 0 ? 'rotate(180deg)' : 'rotate(0deg)'}}
                          src={require('../images/icons/recovered-arrow.png')}/>
                   </span> : <span style={{fontSize: '0.57em'}}>NO CHANGE</span>
@@ -118,17 +108,18 @@ class SummaryData extends Component {
             <div className="stat-container">
               <div className="label">
                 <span>
-                  <img src={require('../images/icons/dead.png')} />
+                  <img alt="dead" src={require('../images/icons/dead.png')} />
                 </span>
                 <span>DEAD</span>
               </div>
               <div className="count">
               <span>{`${deaths.totalToDate.toLocaleString('en')}`}</span>
               {
-                deaths.newInLast24Hr != 0 ?
+                deaths.newInLast24Hr !== 0 ?
                 <span>
                   <span>{this.formatCountIncrease(deaths.newInLast24Hr)}</span>
                   <img className="change-arrow"
+                       alt="change-arrow"
                        style={{transform: deaths.newInLast24Hr > 0 ? 'rotate(180deg)' : 'rotate(0deg)'}}
                        src={require('../images/icons/dead-arrow.png')}/>
                 </span> : <span style={{fontSize: '0.57em'}}>NO CHANGE</span>
@@ -138,17 +129,18 @@ class SummaryData extends Component {
             <div className="stat-container">
               <div className="label">
                 <span>
-                  <img src={require('../images/icons/hospital.png')} />
+                  <img alt="hospital" src={require('../images/icons/hospital.png')} />
                 </span>
                 <span>CURRENTLY IN HOSPITAL</span>
               </div>
               <div className="count">
                 <span>{`${hospitalCases.totalToDate.toLocaleString('en')}`}</span>
                 {
-                  hospitalCases.newInLast24Hr != 0 ?
+                  hospitalCases.newInLast24Hr !== 0 ?
                   <span>
                     <span>{this.formatCountIncrease(hospitalCases.newInLast24Hr)}</span>
                     <img className="change-arrow"
+                         alt="change-arrow"
                          style={{transform: hospitalCases.newInLast24Hr > 0 ? 'rotate(180deg)' : 'rotate(0deg)'}}
                          src={require('../images/icons/hospital-arrow.png')}/>
                   </span> : <span style={{fontSize: '0.57em'}}>NO CHANGE</span>
@@ -158,22 +150,18 @@ class SummaryData extends Component {
             <div className="stat-container">
               <div className="label">
                 <span>
-                  <img src={require('../images/icons/test.png')} />
+                  <img alt="test" src={require('../images/icons/test.png')} />
                 </span>
                 <span>TESTS TO DATE</span>
               </div>
               <div className="count">
                 <span>{`${testingData.totalToDate.testCount.toLocaleString('en')}`}</span>
                 {
-                  testingData.totalToDate.testCount != 0 ?
+                  testingData.totalToDate.testCount !== 0 ?
                   <span>
-                    <span>
-                      {
-                        this.formatCountIncrease(47989)
-                        // testingData.testedYesterday.testCount
-                      }
-                    </span>
+                    <span>{this.formatCountIncrease(testingData.testedYesterday.testCount)}</span>
                     <img className="change-arrow"
+                         alt="change-arrow"
                          style={{transform: testingData.testedYesterday.testCount > 0 ? 'rotate(180deg)' : 'rotate(0deg)'}}
                          src={require('../images/icons/test-arrow.png')}/>
                   </span> : <span style={{fontSize: '0.57em'}}>NO CHANGE</span>
@@ -181,41 +169,31 @@ class SummaryData extends Component {
               </div>
             </div>
           </div>
-          {/*<div className="calendar">
-          </div>*/}
           <div className="footer">
             <div className="footer-container">
               <p style={{fontSize: '1.3em'}}>CREDITS</p>
               <p>
                 DATA SOURCE:&nbsp;
-                <a href="https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-novel-coronavirus/covid-19-current-situation/covid-19-current-cases">
+                <a target="_blank" rel="noopener noreferrer" href="https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-novel-coronavirus/covid-19-current-situation/covid-19-current-cases">
                 MINISTRY OF HEALTH</a>.
               </p>
               <p>
                 DISTRICT HEALTH BOARD MAPPING:&nbsp;
-                <a href="https://datafinder.stats.govt.nz/layer/87883-district-health-board-2015">
+                <a target="_blank" rel="noopener noreferrer" href="https://datafinder.stats.govt.nz/layer/87883-district-health-board-2015">
                 STATS NZ</a>.
               </p>
-              <p>
-                ICONS MADE BY FREEPIK FROM <a href="https://www.flaticon.com">FLATICON</a>.
+              <p style={{marginBottom: '13px'}}>
+                ICONS MADE BY FREEPIK FROM <a target="_blank" rel="noopener noreferrer" href="https://www.flaticon.com">FLATICON</a>.
               </p>
-              {/*<p>THE REGIONS ON THE MAP ARE DIVIDED INTO DISTRICT HEALTH BOARDS. MAPPING PROVIDED BY STATSNZ</p>*/}
               <p style={{fontSize: '1.3em'}}>PLEASE NOTE</p>
               <p>
-                {`GRAPH SHOWING DATA UP TO ${convertDateToString(this.props.chartDate, 'text').toUpperCase()}.`}
+                {`GRAPH IS CURRENTLY SHOWING DATA UP TO ${convertDateToString(this.props.chartDate, 'text').toUpperCase()}.`}
               </p>
-              <p style={{marginBottom: 0}}>THIS SITE IS NOT AN OFFICIAL DATA SOURCE AND MAY NOT BE UP TO DATE.</p>
+              <p style={{marginBottom: 0}}>
+                THIS SITE IS NOT AN OFFICIAL DATA SOURCE. NEW DATA USUALLY UPDATED AFTER 1PM.
+              </p>
             </div>
           </div>
-          {/*Object.entries(this.state.summaryData).map(([key, value]) => {
-            return <p>{`${key}: ${value.totalToDate}`}</p>
-          })*/}
-          {/*
-          <div className="dhb-chart">
-            <p style={{textAlign: 'center', fontSize: '0.7em'}}>CONFIRMED & PROBABLE CASES PER DISTRICT HEALTH BOARD</p>
-              this.props.chartData && <BarChart data={this.props.chartData} />
-          </div>
-          */}
         </div>
       }
       </>

@@ -45,14 +45,6 @@ const BarChart = props => {
           bar: { groupWidth: '40%' },
           legend: { position: 'none' }
         }}
-        chartEvents={[
-          {
-            eventName: 'animationfinish',
-            callback: () => {
-              console.log('Animation Finished')
-            },
-          },
-        ]}
         rootProps={{ 'data-testid': '2' }}
       /> }
     </>

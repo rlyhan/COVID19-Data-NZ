@@ -23,7 +23,8 @@ const group = (array, key) => {
 
 // Adds events to coordinates for chart
 function addEventsToCoords(coords, dataType) {
-  for (var anEvent of events) {
+  for (let index = 0; index < events.length; index++) {
+    let anEvent = events[index]
     // Find valid coordinate by seeing if its date matches an event's date
     var validCoord = coords.find(coord => convertDateToString(coord[0], 'simple') === convertDateToString(anEvent.date, 'simple'))
     if (validCoord) {
@@ -107,14 +108,8 @@ function sortDHBGroupedCases(cases) {
 /* ANNOTATION CHART */
 
 export function getAnnotationCoordinates(cases, startDate, endDate, numberType) {
-  switch(numberType) {
-    case "total":
-      return getTotalCaseCoordinatesAnnotation(cases, startDate, endDate)
-      break;
-    case "new":
-      return getNewCaseCoordinatesAnnotation(cases, startDate, endDate)
-      break;
-  }
+  if (numberType === "total") return getTotalCaseCoordinatesAnnotation(cases, startDate, endDate)
+  else if (numberType === "new") return getNewCaseCoordinatesAnnotation(cases, startDate, endDate)
 }
 
 // Get coordinates for new cases each day on top of total cases overall

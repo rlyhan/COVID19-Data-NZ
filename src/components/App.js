@@ -1,18 +1,10 @@
-import React, { Component } from 'react';
-
-import VisualData from './VisualData'
+import React, { Component } from 'react'
 import SummaryData from './SummaryData'
-import {
-  fetchSummaryData,
-  fetchSummaryDHBData,
-  fetchSummaryTestingData,
-  fetchCases
-} from '../api/covid-data'
-import { getAnnotationCoordinates, getBarCoordinates } from '../helpers/coordinates'
-import { findNearestDateToToday } from '../helpers/dates'
-
-const today = new Date()
-const firstConfirmedCaseDay = new Date('2020-02-26')
+import Mapbox from './visual-data/Mapbox'
+import GoogleChart from './visual-data/GoogleChart'
+import { fetchCurrentData, fetchCases } from '../api/covid-data'
+import { getAnnotationCoordinates } from '../helpers/coordinates'
+import { firstConfirmedCaseDay, findNearestDateToToday } from '../helpers/dates'
 
 class App extends Component {
 
@@ -34,24 +26,18 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // Fetch case summary data from API
-    fetchSummaryData()
+    // Fetch current summary, DHB, and testing data from API
+    fetchCurrentData()
       .then(data => {
-        if (data.error) this.setState({ invalidDataError: true })
-        else this.setState({ apiSummaryData: data })
-      })
-    // Fetch summary DHB data from API
-    fetchSummaryDHBData()
-      .then(data => {
-        if (data.error) this.setState({ invalidDataError: true })
-        else this.setState({ apiDHBData: data })
-      })
-    // Fetch summary testing data from API
-    fetchSummaryTestingData()
-      .then(data => {
-        if (data.error) this.setState({ invalidDataError: true })
-        else this.setState({ apiTestingData: data })
-        console.log(data)
+        var { summaryData, dhbData, testingData } = data
+        if (summaryData.error || dhbData.error || testingData.error) this.setState({ invalidDataError: true })
+        else {
+          this.setState({
+            apiSummaryData: summaryData,
+            apiDHBData: dhbData,
+            apiTestingData: testingData
+          })
+        }
       })
     // Fetch detailed individual case data from API
       // Get coordinates for charts
@@ -82,14 +68,8 @@ class App extends Component {
 
   // Helper: Gets cases based on whether CONFIRMED or CONFIRMED + PROBABLE cases selected
   getCasesByType = () => {
-    switch(this.state.chosenCaseType) {
-      case "confirmed and probable":
-        return this.getAllCases()
-        break;
-      case "confirmed":
-        return this.getConfirmedCases()
-        break;
-    }
+    if (this.state.chosenCaseType === "confirmed and probable") return this.getAllCases()
+    else if (this.state.chosenCaseType === "confirmed") return this.getConfirmedCases()
   }
 
   // Fetches coordinates for chart
@@ -137,6 +117,7 @@ class App extends Component {
   }
 
   render() {
+
     return (
       <>
       { this.state.invalidDataError === true ?
@@ -169,24 +150,30 @@ class App extends Component {
           </div>
           <div className="site-content">
           <div className="visual-data-wrapper">
-            <VisualData googleChartData={this.state.googleChartData}
-                        dhbData={this.state.apiDHBData}
-                        visualType={this.state.chosenVisualType}
-                        caseType={this.state.chosenCaseType}
-                        numberType={this.state.chosenNumberType}
-                        toggleNumberType={this.toggleNumberType}
-                        toggleCaseType={this.toggleCaseType}
-                        chartHeight={this.state.chartHeight} />
+            <div className="visual-data">
+              {
+                this.state.chosenVisualType === 'map' ?
+                <Mapbox data={this.state.apiDHBData} /> :
+                <GoogleChart googleChartData={this.state.googleChartData}
+                             dhbData={this.state.apiDHBData}
+                             visualType={this.state.chosenVisualType}
+                             caseType={this.state.chosenCaseType}
+                             numberType={this.state.chosenNumberType}
+                             toggleNumberType={this.toggleNumberType}
+                             toggleCaseType={this.toggleCaseType} />
+              }
+            </div>
           </div>
             <div className="sidebar-wrapper">
               <SummaryData summaryData={this.state.apiSummaryData}
+                           dhbData={this.state.apiDHBData}
                            testingData={this.state.apiTestingData}
                            chartDate={this.state.chartDate} />
             </div>
           </div>
         </div>
       : <div className="loader">
-          <img src={require('../images/Rolling-1.2s-100px.gif')} />
+          <img alt="loading" src={require('../images/Rolling-1.2s-100px.gif')} />
         </div> }
       </>
     );

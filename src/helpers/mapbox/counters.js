@@ -3,6 +3,7 @@ import { showDHBNames } from './main-data'
 const layerIds = [
   'districtHealthBoardName', 'districtHealthBoardName-label',
   'total', 'total-label',
+  'active', 'active-label',
   'last24Hours', 'last24Hours-label',
   'recovered', 'recovered-label',
   'deceased', 'deceased-label'
@@ -46,17 +47,20 @@ export function changeDisplayData(displayDataType, map, apiData, dhbList) {
       'paint': {
         'circle-radius': [
           'step', ['get', `${displayDataType}-count`],
-          10, 25,
-          15, 50,
-          20, 100,
+          10, 10,
+          12.5, 20,
+          15, 40,
+          17.5, 60,
+          20, 80,
+          22.5, 100,
           25, 150,
           30, 200,
-          35, 250,
-          40, 300,
-          45
+          35, 300,
+          40
         ],
         'circle-opacity': 0.6,
         'circle-color': displayDataType === 'total' ? '#193366' :
+                        displayDataType === 'active' ? '#E6ADB7' :
                         displayDataType === 'last24Hours' ? '#E3C567' :
                         displayDataType === 'recovered' ? '#9BC995' :
                         displayDataType === 'deceased' ? '#E85F5C' : 'black'

@@ -5,3 +5,6 @@ export function getRegularCaseString(str) {
     .map(str => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase())
     .join(" ")
 }
+
+// Formats 'camelCase' to 'space case'
+export const camelToSpaceCase = str => str.replace(/[A-Z]/g, letter => ` ${letter.toLowerCase()}`)

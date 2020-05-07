@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom';
 import Chart from 'react-google-charts'
 
 const AnnotationChart = props => {
@@ -78,14 +77,6 @@ const AnnotationChart = props => {
           annotationsWidth: 25,
           thickness: '2'
         }}
-        chartEvents={[
-          {
-            eventName: 'animationfinish',
-            callback: () => {
-              console.log('Animation Finished')
-            },
-          },
-        ]}
         rootProps={{ 'data-testid': '2' }}
       /> }
     </>

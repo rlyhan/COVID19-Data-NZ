@@ -385,6 +385,35 @@ button:hover {
     border-left-color: rgba(0, 0, 0, 0.85) !important;
 }
 
+/* Popup Table */
+
+.mapboxgl-popup-content table, td {
+  border: 1.5px solid #212121;
+  border-collapse: collapse;
+}
+
+.mapboxgl-popup-content table {
+  width: 100%;
+}
+
+.mapboxgl-popup-content td {
+  padding: 5px;
+}
+
+.mapboxgl-popup-content tr {
+  font-size: 1em;
+  font-weight: bold;
+}
+
+  .mapboxgl-popup-content tr > td:nth-child(1) {
+    text-align: left;
+  }
+
+  .mapboxgl-popup-content tr > td:nth-child(2) {
+    min-width: 20px;
+    text-align: center;
+  }
+
 /* Filter Box */
 
 .map-filter-box {
@@ -480,6 +509,7 @@ button:hover {
 }
 
 .summary-data {
+  height: 100%;
   padding: 10px 0;
   border: 1px solid #212121;
   box-sizing: border-box;
@@ -525,32 +555,32 @@ button:hover {
           color: #a6a6a6;
         }
 
-    .new-info {
-      background-color: #131313;
-      color: white;
+    .active-cases {
+      margin-bottom: 8px;
     }
 
-    .new-info p {
+    .active-cases p, .new-info p {
+      color: white;
       font-size: 0.9em;
       font-weight: 700;
       margin: 0;
     }
 
-      .new-info > p span {
+      .active-cases > p span, .new-info > p span {
         vertical-align: middle;
       }
+
+    .active-cases-icon, .new-case-arrow {
+      width: 22px;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
 
     .new-info ul {
       padding-left: 22px;
       margin: 6px 0 0 0;
       font-size: 0.7em;
       color: #d3d3d3;
-    }
-
-    .new-case-arrow {
-      width: 20px;
-      margin-right: 3px;
-      vertical-align: middle;
     }
 
 /* Additional Stats Section */
@@ -646,22 +676,12 @@ button:hover {
         position: absolute;
       }
 
-        /* .stat-container:nth-child(4) > .count > span:nth-child(1) {
-          font-size: 1.4em;
-        }
-
-        .stat-container:nth-child(4) > .count > span:nth-child(2) {
-          font-size: 0.6em;
-        } */
-
       .change-arrow {
         width: 17px;
         height: 17px;
         margin: 0 2px 2px 0px;
         vertical-align: middle;
       }
-
-  /* Calendar */
 
   /* Footer */
 
@@ -683,7 +703,7 @@ button:hover {
     }
 
     .footer-container {
-      padding: 8px;
+      padding: 13px 8px;
       border-radius: 5px;
       background: #131313;
     }

@@ -25,8 +25,8 @@ router.get('/current-data', (req, res) => {
 /* Get information about every single case */
 router.get('/allcases', (req, res) => {
   res.json({
-    confirmed: XLSX.utils.sheet_to_json(caseFile.Sheets[caseFile.SheetNames[0]], {range: 3}),
-    probable: XLSX.utils.sheet_to_json(caseFile.Sheets[caseFile.SheetNames[1]], {range: 3})
+    confirmed: XLSX.utils.sheet_to_json(caseFile.Sheets[caseFile.SheetNames[0]], {defval: "N/A", range: 3}),
+    probable: XLSX.utils.sheet_to_json(caseFile.Sheets[caseFile.SheetNames[1]], {defval: "N/A", range: 3})
   })
 })
 

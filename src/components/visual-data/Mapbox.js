@@ -1,18 +1,12 @@
 import React, { Component } from 'react'
 import mapboxgl from 'mapbox-gl'
-import axios from 'axios'
-
 import { dhbList } from '../../helpers/general-data'
-import { sortAndGroupCasesByDHB } from '../../helpers/coordinates'
-import { getRegularCaseString } from '../../helpers/general-helpers'
-import { addDHBRegions, createPointsSource, showDHBNames } from '../../helpers/mapbox/main-data'
+import { getRegularCaseString, camelToSpaceCase } from '../../helpers/general-helpers'
+import { addDHBRegions, createPointsSource } from '../../helpers/mapbox/main-data'
 import { changeDisplayData } from '../../helpers/mapbox/counters'
-
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN
 var chartHeight
-
-const camelToSpaceCase = str => str.replace(/[A-Z]/g, letter => ` ${letter.toLowerCase()}`)
 
 class Mapbox extends Component {
 
@@ -56,11 +50,11 @@ class Mapbox extends Component {
 
     // Create filters
     var filterBox = document.querySelector('.map-filter-box')
-    if (document.querySelector('.map-filters')) filterBox.removeChild(document.querySelector('.map-filters'))
+    // if (document.querySelector('.map-filters')) filterBox.removeChild(document.querySelector('.map-filters'))
     var filterList = document.createElement('div')
     filterList.className = 'map-filters'
     filterBox.appendChild(filterList)
-    var displayDataNames = ['districtHealthBoardName', 'total', 'last24Hours', 'recovered', 'deceased']
+    var displayDataNames = ['districtHealthBoardName', 'total', 'active', 'last24Hours', 'recovered', 'deceased']
     displayDataNames.forEach(function(displayData) {
       // Label
       var label = document.createElement('label')
@@ -157,10 +151,23 @@ class Mapbox extends Component {
         var { active, deceased, last24Hours, recovered, total } = data[dhbName]
         return `<div style="font-family: 'Quicksand', sans-serif; background-color: transparent;">
                   <h3>${dhbName.toUpperCase()}</h3>
-                  <p style="font-weight: bold; font-size: 1em; color:#97AEDC; margin: 0">TOTAL CASES: ${total}</p>
-                  <p style="font-weight: bold; font-size: 1em; color:#E3C567; margin: 0">NEW IN LAST 24 HOURS: ${last24Hours}</p>
-                  <p style="font-weight: bold; font-size: 1em; color:#9BC995; margin: 0">RECOVERED: ${recovered}</p>
-                  <p style="font-weight: bold; font-size: 1em; color:#EF8F8D; margin: 0">DEAD: ${deceased}</p>
+                  <table>
+                    <tr style="color:#97AEDC">
+                      <td>TOTAL CASES</td><td>${total}</td>
+                    </tr>
+                    <tr style="color:#E6ADB7">
+                      <td>ACTIVE CASES</td><td>${active}</td>
+                    </tr>
+                    <tr style="color:#E3C567">
+                      <td>NEW CASES (LAST 24 HOURS)</td><td>${last24Hours}</td>
+                    </tr>
+                    <tr style="color:#9BC995">
+                      <td>RECOVERED</td><td>${recovered}</td>
+                    </tr>
+                    <tr style="color:#ED7F7D">
+                      <td>DEAD</td><td>${deceased}</td>
+                    </tr>
+                  </table>
                 </div>
                 `
       }
@@ -170,6 +177,7 @@ class Mapbox extends Component {
 
   componentWillUnmount() {
     this.map = null
+    if (document.querySelector('.map-filters')) document.querySelector('.map-filter-box').removeChild(document.querySelector('.map-filters'))
   }
 
   toggleFilterBox = e => {
@@ -184,23 +192,20 @@ class Mapbox extends Component {
 
   render() {
     return (
-      <>
-        <div className="mapContainer"
-             ref={el => this.mapContainer = el}
-             style={{
-               height: chartHeight,
-               border: '1px solid #212121',
-               boxSizing: 'border-box'
-             }}>
-          <div className="map-filter-box">
-            <div className="toggle-container hidden" onClick={(e) => this.toggleFilterBox(e)}>
-              <div className="toggle-filter-display"/>
-              <p style={{margin: 0}}>SELECT DATA TO DISPLAY</p>
-            </div>
-            <div className="map-filters"/>
+      <div className="mapContainer"
+           ref={el => this.mapContainer = el}
+           style={{
+             height: chartHeight,
+             border: '1px solid #212121',
+             boxSizing: 'border-box'
+           }}>
+        <div className="map-filter-box">
+          <div className="toggle-container hidden" onClick={(e) => this.toggleFilterBox(e)}>
+            <div className="toggle-filter-display"/>
+            <p style={{margin: 0}}>SELECT DATA TO DISPLAY</p>
           </div>
         </div>
-      </>
+      </div>
     )
   }
 

@@ -1,12 +1,24 @@
 import cheerio from 'cheerio'
 import axios from 'axios'
 
-import { convertStringToDate } from '../helpers/dates'
+import { dhbList } from '../helpers/general-data'
 import { getRegularCaseString } from '../helpers/general-helpers'
 
-// Fetches and returns data about overall numbers of COVID-19 cases nationwide
-export async function fetchSummaryData() {
+// Fetches current COVID-19 data
+export async function fetchCurrentData() {
+  const html = await axios.get('/api/healthgovt/current-data')
+  const cheerioParser = await cheerio.load(html.data, {normalizeWhitespace: false, xmlMode: true})
+  return {
+    summaryData: await fetchCurrentSummaryData(cheerioParser),
+    dhbData: await fetchCurrentDHBData(cheerioParser),
+    testingData: await fetchCurrentTestingData(cheerioParser)
+  }
+}
 
+// Fetches and returns data about overall numbers of COVID-19 cases nationwide
+async function fetchCurrentSummaryData(cheerioParser) {
+
+  const $ = cheerioParser
   var summaryData = {
     confirmedCases: {},
     probableCases: {},
@@ -16,8 +28,6 @@ export async function fetchSummaryData() {
     deaths: {}
   }
 
-  const html = await axios.get('/api/healthgovt/current-data')
-  const $ = await cheerio.load(html.data, {normalizeWhitespace: false, xmlMode: true})
   const dataTable = $('tbody')[0]
 
   $(dataTable).find('tr').each((rowIndex, row) => {
@@ -64,13 +74,12 @@ export async function fetchSummaryData() {
   return summaryData
 }
 
-// Fetches and returns summary data about COVID-19 case figures in each district helth board
-export async function fetchSummaryDHBData() {
+// Fetches and returns current data about COVID-19 case figures in each district helth board
+async function fetchCurrentDHBData(cheerioParser) {
 
+  const $ = cheerioParser
   var dhbData = {}
 
-  const html = await axios.get('/api/healthgovt/current-data')
-  const $ = await cheerio.load(html.data, {normalizeWhitespace: false, xmlMode: true})
   const dataTable = $('tbody')[1]
 
   $(dataTable).find('tr').each((rowIndex, row) => {
@@ -94,12 +103,18 @@ export async function fetchSummaryDHBData() {
     // Add DHB object of info to main object
     if (Object.keys(dhbObject).length > 0) dhbData[dhbName] = dhbObject
   })
+  // Delete total count column
   delete dhbData.Total
 
   // A series of checks to see if data format is valid
   var dataIsInvalid = false
-  // Check each property (DHB name) matches the format of provided DHB list
-
+  // Check each property (DHB name) matches the spellings in provided DHB list
+  var correctFormatDHBList = dhbList.map(dhbObject => dhbObject.name)
+  Object.keys(dhbData).forEach(function(apiDHBName) {
+    if (!correctFormatDHBList.includes(apiDHBName)) {
+      dataIsInvalid = true
+    }
+  })
   // Check each entry in a DHB object is a number, if not, data is invalid
   Object.keys(dhbData).forEach(function(k) {
     Object.entries(dhbData[k]).forEach(function(j) {
@@ -113,9 +128,10 @@ export async function fetchSummaryDHBData() {
   return dhbData
 }
 
-// Fetches and returns summary data about COVID-19 testing
-export async function fetchSummaryTestingData() {
+// Fetches and returns current data about COVID-19 testing
+async function fetchCurrentTestingData(cheerioParser) {
 
+  const $ = cheerioParser
   var testingData = {
     testedYesterday: {},
     sevenDayAverage: {},
@@ -123,15 +139,12 @@ export async function fetchSummaryTestingData() {
     suppliesInStock: {}
   }
 
-  const html = await axios.get('/api/healthgovt/current-data')
-  const $ = await cheerio.load(html.data, {normalizeWhitespace: false, xmlMode: true})
   const dataTable = $('tbody')[5]
 
   $(dataTable).find('tr').each((rowIndex, row) => {
 
     let testingStatisticObject = Object.keys(testingData)[rowIndex]
     $(row).find('td').each((colIndex, col) => {
-
       let colData = $(col).text()
       if (colIndex === 0) {
         // If column is number of tests
@@ -149,14 +162,11 @@ export async function fetchSummaryTestingData() {
         // Else if column is date, just add to object
         testingData[testingStatisticObject].date = colData
       }
-
     })
   })
 
   // A series of checks to see if data format is valid
   var dataIsInvalid = false
-  // Check each property (DHB name) matches the format of provided DHB list
-
   // Check each entry in test data (first column should be number,
   // second column should be string) else data is invalid
   Object.keys(testingData).forEach(function(k) {
@@ -164,7 +174,7 @@ export async function fetchSummaryTestingData() {
       if (index === 0) {
         if (isNaN(j[1])) dataIsInvalid = true
       } else if (index === 1) {
-        if (typeof(j[1]) != 'string') {
+        if (typeof(j[1]) !== 'string') {
           dataIsInvalid = true
         }
       }
@@ -180,6 +190,17 @@ export async function fetchCases() {
   var allCases = {}
   const apiData = await axios.get('/api/healthgovt/allcases')
 
+  // Run a check to see if columns are named correctly
+  var dataIsInvalid = false
+  var rowSamples = [apiData.data.confirmed[apiData.data.confirmed.length-1], apiData.data.probable[0]]
+  rowSamples.forEach(function(row) {
+    if (!row['Age group'] || !row['Arrival date'] || !row['DHB'] || !row['Date notified of potential case'] ||
+      !row['Flight departure date'] || !row['Flight number'] || !row['Last country before return'] ||
+      !row['Overseas travel'] || !row['Sex']) dataIsInvalid = true
+  })
+  if (dataIsInvalid) return { error: 'Data is invalid' }
+
+  // Extract case data from both confirmed and probable cases
   allCases.confirmed = extractCaseData(apiData.data.confirmed)
   allCases.probable = extractCaseData(apiData.data.probable)
 
@@ -190,21 +211,19 @@ export async function fetchCases() {
 function extractCaseData(apiData) {
   var cases = []
   apiData.forEach(function(currentValue) {
-    let date = currentValue['Date of report'].split('/')
+    let date = currentValue['Date notified of potential case'].split('/')
     cases.push({
       "reportDate": new Date(`${date[2]}-${date[1]}-${date[0]}`),
-      "sex": currentValue['Sex'] ? currentValue['Sex'] : "N/A",
-      "ageGroup": currentValue['Age group'] ? currentValue['Age group'] : "N/A",
-      "districtHealthBoard": currentValue['DHB'] ? currentValue['DHB'] : "N/A",
-      "overseas": currentValue['Overseas travel'] === "Yes" ? true :
-                  currentValue['Overseas travel'] === "No" ? false :
-                  "N/A",
-      "lastCountryBeforeNZ": currentValue['Last country before return'] ?
-                             currentValue['Last country before return'] : "N/A",
-      "flightNumber": currentValue['Flight number'] ? currentValue['Flight number'] : "N/A",
-      "departureDate": currentValue['Flight departure date'] ?
+      "sex": currentValue['Sex'],
+      "ageGroup": currentValue['Age group'],
+      "districtHealthBoard": currentValue['DHB'],
+      "overseas": (currentValue['Overseas travel'] === "Yes") ? true :
+                  (currentValue['Overseas travel'] === "No") ? false : "N/A",
+      "lastCountryBeforeNZ": currentValue['Last country before return'],
+      "flightNumber": currentValue['Flight number'],
+      "departureDate": currentValue['Flight departure date'] !== "N/A" ?
                        new Date(currentValue['Flight departure date']) : "N/A",
-      "arrivalDate": currentValue['Arrival date'] ?
+      "arrivalDate": currentValue['Arrival date'] !== "N/A" ?
                      new Date(currentValue['Arrival date']) : "N/A"
     })
   })
