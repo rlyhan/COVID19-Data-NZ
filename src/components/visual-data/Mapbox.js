@@ -20,7 +20,7 @@ class Mapbox extends Component {
       displayData: 'total'
     }
     if (window.screen.width > window.screen.height) chartHeight = '80vh'
-    else chartHeight = '70vh'
+    else chartHeight = '60vh'
   }
 
   componentDidMount() {

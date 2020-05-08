@@ -54,6 +54,11 @@ button:hover {
 
   .header h2 {
     color: white;
+    font-size: 1.1em;
+  }
+
+  @media (min-width: 400px) {
+    .header h2 { font-size: 1.5em; }
   }
 
   /* Navigation */
@@ -116,7 +121,7 @@ button:hover {
 .site-content {
   padding: 0 2.5%;
   display: grid;
-  grid-template-columns: auto;
+  grid-template-columns: 1fr;
   grid-row-gap: 7px;
   grid-template-areas: " a " " b ";
 }
@@ -149,20 +154,17 @@ button:hover {
 /*** Visual Data ***/
 
 .visual-data-wrapper {
-  max-height: 80vh;
   box-sizing: border-box;
   grid-area: a;
+}
+
+@media (min-width: 565px) {
+  .visual-data-wrapper { max-height: 80vh; }
 }
 
 /* Google Chart */
 
   /* Annotation Chart */
-
-    /* Makes sure the container isn't too big for chart */
-    .visual-data > div[style], .visual-data > div > div[style] {
-      /* width: auto !important;
-      height: auto !important; */
-    }
 
     /* Chart border: grey */
     .google-visualization-atl .border {
@@ -174,14 +176,106 @@ button:hover {
       background-color: black;
     }
 
+    /* Legend text: white */
+    div[id*="_AnnotationChart_legendContainer"] > span {
+      color: white !important;
+    }
+
     /* Annotation container left border: grey */
     .google-visualization-atl .annotationsTdContainer {
       border-left: 1px solid #212121 !important;
     }
 
-    /* Legend text: white */
-    div[id*="_AnnotationChart_legendContainer"] > span {
-      color: white !important;
+    /* Annotation table background color: Black */
+    .google-visualization-atl .annotationsContainer .google-visualization-table-tr-odd,
+    .google-visualization-atl .annotationsContainer .google-visualization-table-tr-odd td,
+    .google-visualization-atl .annotationsContainer .google-visualization-table-tr-even,
+    .google-visualization-atl .annotationsContainer .google-visualization-table-tr-even td {
+      background-color: black !important;
+    }
+
+    /* Annotation table bottom border: Black */
+    .google-visualization-atl .annotationsContainer .google-visualization-table-td {
+      border-bottom-width: 0 !important;
+    }
+
+    @media (orientation: portait) {
+      div[id*="_AnnotationChart_containerTable"], div[id*="_AnnotationChart_containerTable"] > div {
+        display: block !important;
+      }
+    }
+
+    /* Screen width < 565px, make annotations table display below graph */
+
+    .annotation-toggle {
+      width: 100%;
+      height: 42px;
+      background: pink;
+      position: absolute;
+      display: none;
+    }
+
+    .annotationsContainer {
+      height: 40px !important;
+      background-color: black;
+      border-bottom: 1px solid #212121;
+      overflow: hidden;
+    }
+
+    .google-visualization-atl .containerTable .td {
+      display: table-row !important;
+    }
+
+    @media (min-width: 565px) {
+      .annotationsContainer {
+        height: 100% !important;
+        overflow: auto;
+      }
+      .google-visualization-atl .containerTable .td {
+        display: table-cell !important;
+      }
+    }
+
+    @media (min-width: 940px) {
+      .annotationsContainer {
+        height: 100% !important;
+        border-bottom-width: 0px;
+        overflow: auto;
+      }
+    }
+
+    /* Annotations: Inline (when less than 565px/portrait) */
+    .google-visualization-table-table tr {
+      width: 100%;
+    }
+
+    /* Annotation */
+    .google-visualization-table-td > span {
+      font-family: 'Quicksand', sans-serif;
+      float: left;
+      clear: left;
+    }
+
+      /* Annotation title */
+      .google-visualization-table-table .title {
+        color: #dabc3f;
+        font-size: 1.2em !important;
+        text-transform: uppercase;
+      }
+
+      /* Annotation description */
+      .google-visualization-table-table .description {
+        font-size: 1em !important;
+      }
+
+    /* Screen width < 565px, hide range control as does not work */
+    .rangeControl {
+      display: none;
+    }
+    @media (min-width: 565px) {
+      .rangeControl {
+        display: block;
+      }
     }
 
     /* Range control background: black */
@@ -203,44 +297,6 @@ button:hover {
     div[id*="_AnnotationChart_rangeControlContainer"] > div > div > div > svg > g > g:nth-child(4) {
       display: none !important;
     }
-
-    /* Annotation table */
-    .google-visualization-atl .annotationsContainer .google-visualization-table-tr-odd,
-    .google-visualization-atl .annotationsContainer .google-visualization-table-tr-odd td,
-    .google-visualization-atl .annotationsContainer .google-visualization-table-tr-even,
-    .google-visualization-atl .annotationsContainer .google-visualization-table-tr-even td {
-      background-color: black !important;
-    }
-    .google-visualization-atl .annotationsContainer .google-visualization-table-td {
-      border-bottom-width: 0 !important;
-    }
-
-    @media (orientation: portait) {
-
-      div[id*="_AnnotationChart_containerTable"], div[id*="_AnnotationChart_containerTable"] > div {
-        display: block !important;
-      }
-
-    }
-
-    /* Annotation */
-    .google-visualization-table-td > span {
-      font-family: 'Quicksand', sans-serif;
-      float: left;
-      clear: left;
-    }
-
-      /* Annotation title */
-      .google-visualization-table-table .title {
-        color: #dabc3f;
-        font-size: 1.2em !important;
-        text-transform: uppercase;
-      }
-
-      /* Annotation description */
-      .google-visualization-table-table .description {
-        font-size: 1em !important;
-      }
 
   /* Bar Chart */
 
@@ -264,31 +320,82 @@ button:hover {
   /* Toggle Menu */
 
   .toggle-menu-wrapper {
-    margin-top: 7px;
+    padding: 8px;
+    margin-top: 6px;
     border: 1px solid #212121;
     background: #0d0d0d;
+    display: grid;
+    grid-column-gap: 10px;
+  }
+
+  @media (min-width: 565px) {
+
+    .toggle-menu-wrapper {
+      grid-template-columns: auto 1fr;
+    }
+
   }
 
     .toggle-menu {
-      margin: 8px 12px;
       display: inline-block;
+      align-self: center;
+      text-align: left;
+    }
+
+    .toggle-menu:nth-child(2) {
+      margin-top: 10px;
+    }
+
+    @media (min-width: 565px) {
+
+      .toggle-menu {
+        text-align: justify;
+      }
+
+      .toggle-menu:nth-child(2) {
+        margin-top: 0;
+      }
+
     }
 
       /* Dropdown */
 
-      .toggle-menu select {
-        height: 29px;
-        padding: 5px;
+      .dropdown-wrapper {
+        max-width: 234px;
         border: 1px solid #212121;
+        position: relative;
+      }
+
+      .dropdown-wrapper select {
+        width: 100%;
+        height: 29px;
+        padding-left: 10px;
+        border: 0;
         background: #0d0d0d;
+        box-sizing: border-box;
         color: white;
         font-size: 13px;
         font-family: 'Quicksand', sans-serif;
         font-weight: 500;
         outline: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
       }
 
-      .toggle-menu select:hover {
+      .dropdown-wrapper select:hover {
+        cursor: pointer;
+      }
+
+      .dropdown-wrapper::after {
+        content: "▼";
+        font-size: 0.75em;
+        top: 7px;
+        right: 9px;
+        position: absolute;
+      }
+
+      .dropdown-wrapper::after:hover {
         cursor: pointer;
       }
 
@@ -571,7 +678,7 @@ button:hover {
       }
 
     .active-cases-icon, .new-case-arrow {
-      width: 22px;
+      width: 20px;
       margin-right: 6px;
       vertical-align: middle;
     }
@@ -635,7 +742,7 @@ button:hover {
   }
 
   .stat-container:nth-child(4) {
-    color: #8589A8;
+    color: #adaec6;
   }
 
     .label {

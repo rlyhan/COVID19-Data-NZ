@@ -47,10 +47,12 @@ class GoogleChart extends Component {
                 </label>
               </div>
               <div className="toggle-menu">
-                <select onChange={this.props.toggleCaseType.bind(this)}>
-                  <option value="confirmed and probable">CONFIRMED + PROBABLE CASES</option>
-                  <option value="confirmed">CONFIRMED CASES ONLY</option>
-                </select>
+                <div className="dropdown-wrapper">
+                  <select onChange={this.props.toggleCaseType.bind(this)}>
+                    <option value="confirmed and probable">CONFIRMED + PROBABLE CASES</option>
+                    <option value="confirmed">CONFIRMED CASES ONLY</option>
+                  </select>
+                </div>
               </div>
             </div>
           </> }

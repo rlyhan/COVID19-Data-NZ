@@ -68,11 +68,11 @@ class SummaryData extends Component {
                     <span>NO NEW CASES</span>
                   }
                 </p>
-                <ul>
+              <ul>
                   {
                     confirmedCases.newInLast24Hr > 0 &&
                     <li>
-                      {`${confirmedCases.newInLast24Hr} ${confirmedCases.newInLast24Hr > 1 ? 'cases' : 'case'} classified as confirmed`}
+                      {`${confirmedCases.newInLast24Hr} ${confirmedCases.newInLast24Hr > 1 ? 'cases' : 'case'} updated as confirmed`}
                     </li>
                   }
                   {
@@ -187,7 +187,7 @@ class SummaryData extends Component {
               </p>
               <p style={{fontSize: '1.3em'}}>PLEASE NOTE</p>
               <p>
-                {`GRAPH IS CURRENTLY SHOWING DATA UP TO ${convertDateToString(this.props.chartDate, 'text').toUpperCase()}.`}
+                {`GRAPH IS CURRENTLY SHOWING DATA UP TO DATE OF LATEST CASE: ${convertDateToString(this.props.chartDate, 'text').toUpperCase()}.`}
               </p>
               <p style={{marginBottom: 0}}>
                 THIS SITE IS NOT AN OFFICIAL DATA SOURCE. NEW DATA USUALLY UPDATED AFTER 1PM.
