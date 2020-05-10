@@ -123,47 +123,57 @@ class App extends Component {
       { this.state.invalidDataError === true ?
         <div className="App">
           <div className="header">
-            <div>
-              <h2>COVID-19 DATA - NEW ZEALAND</h2>
-            </div>
-            <div className="maintenance">WEBSITE UNDER MAINTENANCE. PLEASE CHECK AGAIN SOON!</div>
+            <h2>COVID-19 DATA - NEW ZEALAND</h2>
           </div>
+          <div className="maintenance">WEBSITE UNDER MAINTENANCE. PLEASE CHECK AGAIN SOON!</div>
         </div> :
         this.state.apiSummaryData !== null && this.state.apiDHBData !== null &&
         this.state.apiTestingData != null && this.state.apiCaseData != null?
         <div className="App">
-          <div className="header">
-            <div>
+          <div className="header-wrapper">
+            <input type="checkbox" id="toggle"/>
+            <div className="hamburger-menu">
+              <div id="burger">
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+            <div className="header">
               <h2>COVID-19 DATA - NEW ZEALAND</h2>
             </div>
             <div className="navigation">
-              <button value="map"
-                      disabled={this.state.chosenVisualType === "map"}
-                      onClick={e => this.toggleChartType(e)}>MAP</button>
-              <button value="case timeline"
-                      disabled={this.state.chosenVisualType === "case timeline"}
-                      onClick={e => this.toggleChartType(e)}>CASE TIMELINE</button>
+              <div>
+                <button value="map"
+                        disabled={this.state.chosenVisualType === "map"}
+                        onClick={e => this.toggleChartType(e)}>MAP</button>
+              </div>
+              <div>
+                <button value="case timeline"
+                        disabled={this.state.chosenVisualType === "case timeline"}
+                        onClick={e => this.toggleChartType(e)}>CASE TIMELINE</button>
+              </div>
               {/*<button value="bar"
                       disabled={this.state.chosenVisualType === "bar"}
                       onClick={e => this.toggleChartType(e)}>STATISTICS</button>*/}
             </div>
           </div>
           <div className="site-content">
-          <div className="visual-data-wrapper">
-            <div className="visual-data">
-              {
-                this.state.chosenVisualType === 'map' ?
-                <Mapbox data={this.state.apiDHBData} /> :
-                <GoogleChart googleChartData={this.state.googleChartData}
-                             dhbData={this.state.apiDHBData}
-                             visualType={this.state.chosenVisualType}
-                             caseType={this.state.chosenCaseType}
-                             numberType={this.state.chosenNumberType}
-                             toggleNumberType={this.toggleNumberType}
-                             toggleCaseType={this.toggleCaseType} />
-              }
+            <div className="visual-data-wrapper">
+              <div className="visual-data">
+                {
+                  this.state.chosenVisualType === 'map' ?
+                  <Mapbox data={this.state.apiDHBData} /> :
+                  <GoogleChart googleChartData={this.state.googleChartData}
+                               dhbData={this.state.apiDHBData}
+                               visualType={this.state.chosenVisualType}
+                               caseType={this.state.chosenCaseType}
+                               numberType={this.state.chosenNumberType}
+                               toggleNumberType={this.toggleNumberType}
+                               toggleCaseType={this.toggleCaseType} />
+                }
+              </div>
             </div>
-          </div>
             <div className="sidebar-wrapper">
               <SummaryData summaryData={this.state.apiSummaryData}
                            dhbData={this.state.apiDHBData}

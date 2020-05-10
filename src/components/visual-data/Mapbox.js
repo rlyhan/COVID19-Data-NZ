@@ -6,7 +6,6 @@ import { addDHBRegions, createPointsSource } from '../../helpers/mapbox/main-dat
 import { changeDisplayData } from '../../helpers/mapbox/counters'
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN
-var chartHeight
 
 class Mapbox extends Component {
 
@@ -19,8 +18,6 @@ class Mapbox extends Component {
       mapLoaded: false,
       displayData: 'total'
     }
-    if (window.screen.width > window.screen.height) chartHeight = '80vh'
-    else chartHeight = '60vh'
   }
 
   componentDidMount() {
@@ -47,6 +44,8 @@ class Mapbox extends Component {
       createPointsSource(map)
       changeDisplayData(this.state.displayData, map, data, dhbList)
     })
+
+    window.addEventListener("resize", map.resize())
 
     // Create filters
     var filterBox = document.querySelector('.map-filter-box')
@@ -113,7 +112,7 @@ class Mapbox extends Component {
         // Remove current popup
         if (currentPopup) currentPopup.remove()
         // Center view upon popup
-        map.flyTo({ center: e.features[0].geometry.coordinates, zoom: 8 })
+        map.flyTo({ center: e.features[0].geometry.coordinates, zoom: 6 })
         // Get coordinates and DHB name
         var coordinates = e.features[0].geometry.coordinates.slice()
         var title = getRegularCaseString(e.features[0].properties.title)
@@ -140,7 +139,7 @@ class Mapbox extends Component {
           dhb.name === getRegularCaseString(e.features[0]._vectorTileFeature.properties.DHB2015_Na)
         )
         var coordinates = [clickedDHB.lng, clickedDHB.lat]
-        map.flyTo({ center: coordinates, zoom: 8 })
+        map.flyTo({ center: coordinates, zoom: 6 })
         // Place a popup
         currentPopup = new mapboxgl.Popup({ className: 'popup' })
           .setLngLat(coordinates)
@@ -149,9 +148,9 @@ class Mapbox extends Component {
       })
       function getPopupHTML(dhbName) {
         var { active, deceased, last24Hours, recovered, total } = data[dhbName]
-        return `<div style="font-family: 'Quicksand', sans-serif; background-color: transparent;">
-                  <h3>${dhbName.toUpperCase()}</h3>
+        return `<div style="padding: 5px; font-family: 'Quicksand', sans-serif; background-color: transparent;">
                   <table>
+                    <tr><th>${dhbName.toUpperCase()}</th></tr>
                     <tr style="color:#97AEDC">
                       <td>TOTAL CASES</td><td>${total}</td>
                     </tr>
@@ -176,8 +175,8 @@ class Mapbox extends Component {
   }
 
   componentWillUnmount() {
-    this.map = null
     if (document.querySelector('.map-filters')) document.querySelector('.map-filter-box').removeChild(document.querySelector('.map-filters'))
+    this.map.remove()
   }
 
   toggleFilterBox = e => {
@@ -192,17 +191,18 @@ class Mapbox extends Component {
 
   render() {
     return (
-      <div className="mapContainer"
-           ref={el => this.mapContainer = el}
-           style={{
-             height: chartHeight,
-             border: '1px solid #212121',
-             boxSizing: 'border-box'
-           }}>
-        <div className="map-filter-box">
-          <div className="toggle-container hidden" onClick={(e) => this.toggleFilterBox(e)}>
-            <div className="toggle-filter-display"/>
-            <p style={{margin: 0}}>SELECT DATA TO DISPLAY</p>
+      <div className="map-wrapper">
+        <div className="mapContainer"
+             ref={el => this.mapContainer = el}
+             style={{
+               border: '1px solid #212121',
+               boxSizing: 'border-box'
+             }}>
+          <div className="map-filter-box">
+            <div className="toggle-container hidden" onClick={(e) => this.toggleFilterBox(e)}>
+              <div className="toggle-filter-display"/>
+              <p style={{margin: 0}}>SELECT DATA TO DISPLAY</p>
+            </div>
           </div>
         </div>
       </div>

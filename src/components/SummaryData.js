@@ -26,8 +26,9 @@ class SummaryData extends Component {
       deaths,
       hospitalCases
     } = this.props.summaryData
+    const newCases = (confirmedCases.newInLast24Hr > 0 ? confirmedCases.newInLast24Hr : 0) + (probableCases.newInLast24Hr > 0 ? probableCases.newInLast24Hr : 0)
     const { dhbData, testingData } = this.props
-    var activeCases = Object.keys(dhbData).reduce(function(total, name) { return total + parseInt(dhbData[name].active)}, 0)
+    const activeCases = Object.keys(dhbData).reduce(function(total, name) { return total + parseInt(dhbData[name].active)}, 0)
 
     return (
       <>
@@ -55,17 +56,15 @@ class SummaryData extends Component {
               <div className="new-info">
                 <p>
                   {
-                    confirmedAndProbableCases.newInLast24Hr !== 0 ?
                     <>
                       <span>
                         <img className="new-case-arrow"
                              alt="new-case-arrow"
-                             style={{transform: confirmedAndProbableCases.newInLast24Hr > 0 ? 'rotate(180deg)' : 'rotate(0deg)'}}
+                             style={{transform: newCases > 0 ? 'rotate(180deg)' : 'rotate(0deg)'}}
                              src={require('../images/icons/new-case-arrow.png')}/>
                       </span>
-                      <span>{this.formatCount(confirmedAndProbableCases.newInLast24Hr, 'NEW')}</span>
-                    </> :
-                    <span>NO NEW CASES</span>
+                      <span>{this.formatCount(newCases, 'NEW')}</span>
+                    </>
                   }
                 </p>
               <ul>

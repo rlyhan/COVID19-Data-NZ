@@ -40,40 +40,152 @@ button:hover {
   border-radius: 10px;
 }
 
+/* App */
+
+.App {
+  max-width: 100vw;
+  padding: 0 2.5%;
+}
+
+@media (min-width: 565px) {
+  .App { padding: 0 2.5%; }
+}
+
+@media (min-width: 940px) and (orientation: landscape) {
+  .App { padding: 0 5%; }
+}
+
 /*** Header ***/
 
+.header-wrapper {
+  display: block;
+}
+
+@media (min-width: 565px) {
+  .header-wrapper {
+    display: grid;
+    grid-template-columns: 1fr auto;
+  }
+}
+
 .header {
-  padding: 10px 2.5%;
-  margin-bottom: 20px;
+  min-height: 35px;
   text-align: center;
   display: block;
-  justify-content: center;
 }
 
   /* Logo */
 
   .header h2 {
+    padding-top: 5px;
     color: white;
-    font-size: 1.1em;
+    font-size: 0.8em;
   }
 
-  @media (min-width: 400px) {
+  @media (min-width: 565px) {
+    .header {
+      text-align: center;
+      position: relative;
+    }
+    .header h2 {
+      padding-top: 0;
+      font-size: 1em;
+      text-align: left;
+    }
+  }
+
+  @media (min-width: 940px) {
     .header h2 { font-size: 1.5em; }
+  }
+
+  /* Hamburger Menu */
+
+  #toggle {
+    opacity: 0;
+    width: 35px;
+    height: 29px;
+    margin: 0;
+    position: absolute;
+    display: block;
+    z-index: 99;
+  }
+
+  #toggle:checked ~ .navigation {
+    display: block;
+  }
+
+    #toggle:checked ~ .navigation > div:nth-child(1) > button {
+      padding-left: 0;
+      margin-top: 5px;
+    }
+
+    #toggle:checked ~ .navigation > div:nth-child(2) > button {
+      padding-left: 0;
+      margin-top: 10px;
+    }
+
+  #toggle:hover {
+    cursor: pointer;
+  }
+
+  .hamburger-menu {
+    position: absolute;
+  }
+
+  #burger {
+    z-index: 98;
+  }
+
+  #burger > div {
+    background-color: white;
+    width: 25px;
+    height: 3px;
+    margin: 5px 0;
+  }
+
+  @media only screen and (min-width: 565px) {
+
+    #toggle {
+      display: none;
+    }
+
+    #toggle:checked ~ .navigation {
+      display: flex;
+    }
+
+    #toggle:checked ~ .navigation > div:nth-child(1) > button,
+    #toggle:checked ~ .navigation > div:nth-child(2) > button {
+      margin-top: 0;
+    }
+
+    #burger {
+      display: none;
+    }
+
   }
 
   /* Navigation */
 
   .navigation {
-    display: flex;
+    margin-bottom: 15px;
+    display: none;
     justify-content: center;
     align-items: center;
+  }
+
+  @media screen and (min-width: 565px) {
+    .navigation {
+      margin: 0;
+      text-align: right;
+      display: flex;
+      justify-content: flex-end;
+    }
   }
 
     /* Buttons */
 
     .navigation button {
-      padding: 7px 10px 5px 10px;
-      margin: 0 5px;
+      padding: 0;
       border-width: 0px;
       background-color: transparent;
       color: white;
@@ -81,6 +193,10 @@ button:hover {
       font-weight: bold;
       outline: none;
       text-decoration: none;
+    }
+
+    .navigation > div:nth-child(1) > button {
+      margin-right: 20px;
     }
 
       /* Underline */
@@ -119,23 +235,20 @@ button:hover {
 /*** Site Content ***/
 
 .site-content {
-  padding: 0 2.5%;
   display: grid;
   grid-template-columns: 1fr;
   grid-row-gap: 7px;
   grid-template-areas: " a " " b ";
 }
 
-@media (min-width: 940px) and (orientation: landscape) {
-  .header {
-    padding: 10px 5%;
-    margin-bottom: 0;
-    text-align: left;
-    display: flex;
-    justify-content: space-between;
-  }
+@media (orientation: landscape) {
   .site-content {
-    padding: 0 5%;
+    height: 80vh;
+  }
+}
+
+@media (min-width: 940px) and (orientation: landscape) {
+  .site-content {
     grid-template-columns: 30% 70%;
     grid-column-gap: 7px;
     grid-template-areas: " b a ";
@@ -144,7 +257,6 @@ button:hover {
 
 @media (min-width: 940px) and (orientation: portait) {
   .site-content {
-    padding: 0 2.5%;
     display: grid;
     grid-template-columns: auto;
     grid-row-gap: 7px;
@@ -158,11 +270,15 @@ button:hover {
   grid-area: a;
 }
 
-@media (min-width: 565px) {
-  .visual-data-wrapper { max-height: 80vh; }
-}
-
 /* Google Chart */
+
+  @media (orientation: landscape) {
+    .google-chart > div { height: calc(80vh - 54px); }
+  }
+
+  @media (orientation: portrait) {
+    .google-chart > div { height: 50vh; }
+  }
 
   /* Annotation Chart */
 
@@ -272,6 +388,7 @@ button:hover {
     .rangeControl {
       display: none;
     }
+
     @media (min-width: 565px) {
       .rangeControl {
         display: block;
@@ -465,13 +582,28 @@ button:hover {
 
 /*** Mapbox ***/
 
+.map-wrapper {
+  max-width: 95vw;
+}
+
+@media (orientation: landscape) {
+  .mapContainer { height: 80vh; }
+}
+
+@media (orientation: portrait) {
+  .mapContainer { height: 50vh; }
+}
+
 /* Popup */
 
 .mapboxgl-popup-content {
+  padding: 0;
   background-color: rgba(0, 0, 0, 0.85);
 }
 
 .mapboxgl-popup-close-button {
+  padding-top: 10px;
+  padding-right: 10px;
   color: white;
 }
 
@@ -494,8 +626,8 @@ button:hover {
 
 /* Popup Table */
 
-.mapboxgl-popup-content table, td {
-  border: 1.5px solid #212121;
+.mapboxgl-popup-content table, tr, td {
+  /* border: 1.5px solid #212121; */
   border-collapse: collapse;
 }
 
@@ -503,7 +635,7 @@ button:hover {
   width: 100%;
 }
 
-.mapboxgl-popup-content td {
+.mapboxgl-popup-content th, td {
   padding: 5px;
 }
 
@@ -525,6 +657,7 @@ button:hover {
 
 .map-filter-box {
   width: 210px;
+  max-height: 30vh;
   margin: 9px 0 0 9px;
   border: 1px solid #212121;
   background: #0d0d0d;
@@ -533,6 +666,11 @@ button:hover {
   z-index: 99;
   font-family: 'Quicksand', sans-serif;
   transition: height 0.5s ease;
+  overflow: auto;
+}
+
+@media (min-width: 565px) and (orientation: landscape) {
+  .map-filter-box { max-height: 100%; }
 }
 
 .map-filter-box p, span {
