@@ -139,9 +139,12 @@ class Mapbox extends Component {
           dhb.name === getRegularCaseString(e.features[0]._vectorTileFeature.properties.DHB2015_Na)
         )
         var coordinates = [clickedDHB.lng, clickedDHB.lat]
-        map.flyTo({ center: coordinates, zoom: 6 })
+        map.flyTo({ center: coordinates, zoom: 5 })
         // Place a popup
-        currentPopup = new mapboxgl.Popup({ className: 'popup' })
+        currentPopup = new mapboxgl.Popup({
+          className: 'popup',
+          anchor: (window.screen.width > 565) ? 'top' : 'center'
+        })
           .setLngLat(coordinates)
           .setHTML(getPopupHTML(clickedDHB.name))
           .addTo(map)

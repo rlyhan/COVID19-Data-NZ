@@ -2,8 +2,8 @@ import React from 'react'
 import Chart from 'react-google-charts'
 
 // If landscape, chart height around 80vh
-// If portrait, chart height 50vh
-const chartHeight = (window.screen.width > window.screen.height) ? 'calc(80vh - 54px)' : '50vh'
+// If portrait, chart height 60vh
+const chartHeight = (window.screen.width > window.screen.height) ? 'calc(80vh - 54px)' : '60vh'
 
 const AnnotationChart = props => {
   return (

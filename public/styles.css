@@ -277,7 +277,7 @@ button:hover {
   }
 
   @media (orientation: portrait) {
-    .google-chart > div { height: 50vh; }
+    .google-chart > div { height: 60vh; }
   }
 
   /* Annotation Chart */
@@ -591,7 +591,7 @@ button:hover {
 }
 
 @media (orientation: portrait) {
-  .mapContainer { height: 50vh; }
+  .mapContainer { height: 60vh; }
 }
 
 /* Popup */
@@ -627,7 +627,6 @@ button:hover {
 /* Popup Table */
 
 .mapboxgl-popup-content table, tr, td {
-  /* border: 1.5px solid #212121; */
   border-collapse: collapse;
 }
 
@@ -636,12 +635,17 @@ button:hover {
 }
 
 .mapboxgl-popup-content th, td {
-  padding: 5px;
+  padding: 3px;
 }
 
 .mapboxgl-popup-content tr {
-  font-size: 1em;
+  font-size: 0.9em;
   font-weight: bold;
+}
+
+@media (min-width: 565px) {
+  .mapboxgl-popup-content th, td { padding: 5px; }
+  .mapboxgl-popup-content tr { font-size: 1em; }
 }
 
   .mapboxgl-popup-content tr > td:nth-child(1) {
