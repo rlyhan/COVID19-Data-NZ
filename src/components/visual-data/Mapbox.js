@@ -112,7 +112,7 @@ class Mapbox extends Component {
         // Remove current popup
         if (currentPopup) currentPopup.remove()
         // Center view upon popup
-        map.flyTo({ center: e.features[0].geometry.coordinates, zoom: 6 })
+        map.flyTo({ center: e.features[0].geometry.coordinates })
         // Get coordinates and DHB name
         var coordinates = e.features[0].geometry.coordinates.slice()
         var title = getRegularCaseString(e.features[0].properties.title)
@@ -139,7 +139,7 @@ class Mapbox extends Component {
           dhb.name === getRegularCaseString(e.features[0]._vectorTileFeature.properties.DHB2015_Na)
         )
         var coordinates = [clickedDHB.lng, clickedDHB.lat]
-        map.flyTo({ center: coordinates, zoom: 5 })
+        map.flyTo({ center: coordinates })
         // Place a popup
         currentPopup = new mapboxgl.Popup({
           className: 'popup',

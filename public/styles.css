@@ -116,12 +116,11 @@ button:hover {
 
     #toggle:checked ~ .navigation > div:nth-child(1) > button {
       padding-left: 0;
-      margin-top: 5px;
     }
 
     #toggle:checked ~ .navigation > div:nth-child(2) > button {
       padding-left: 0;
-      margin-top: 10px;
+      margin-top: 12px;
     }
 
   #toggle:hover {
