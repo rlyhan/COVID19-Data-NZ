@@ -39,6 +39,9 @@ class App extends Component {
           })
         }
       })
+      .catch(e => {
+        this.setState({ invalidDataError: true })
+      })
     // Fetch detailed individual case data from API
       // Get coordinates for charts
       // Initially shows ALL CASES ie. CONFIRMED + PROBABLE CASES / TOTAL NO. CASES
@@ -53,6 +56,9 @@ class App extends Component {
             })
           })
         }
+      })
+      .catch(e => {
+        this.setState({ invalidDataError: true })
       })
   }
 

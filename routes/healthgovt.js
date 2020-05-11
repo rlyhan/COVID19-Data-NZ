@@ -23,7 +23,7 @@ router.get('/current-data', (req, res) => {
 })
 
 /* Get information about every single case */
-router.get('/allcases', (req, res) => {
+router.get('/all-cases', (req, res) => {
   axios.get(caseList)
     .then(page => {
       // Load from web page
@@ -35,6 +35,7 @@ router.get('/allcases', (req, res) => {
         response.pipe(caseFileWriteStream)
         response.on('end', function() {
           fs.readFile('all-cases.xlsx', function(err, buffer) {
+            if (err) res.status(500).json({})
             allCases = XLSX.read(buffer, {type: 'buffer', cellDates: true})
             res.json({
               confirmed: XLSX.utils.sheet_to_json(allCases.Sheets[allCases.SheetNames[0]], {defval: "N/A", range: 3}),
@@ -42,12 +43,13 @@ router.get('/allcases', (req, res) => {
             })
           })
         })
-        response.on('error', function() {
-          res.status(500).json({})
-        })
+      }).on('error', function() {
+        console.log("Unable to find XLSX file from link")
+        res.status(500).json({})
       })
     })
     .catch(err => {
+      console.log("Unable to get HTML")
       res.status(500).json({})
     })
 })

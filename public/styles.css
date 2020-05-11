@@ -383,6 +383,13 @@ button:hover {
         font-size: 1em !important;
       }
 
+      /* Annotation date */
+      .google-visualization-table-table .date {
+        color: #212121;
+        font-size: 1em !important;
+        font-weight: bold;
+      }
+
     /* Screen width < 565px, hide range control as does not work */
     .rangeControl {
       display: none;
@@ -640,6 +647,10 @@ button:hover {
 .mapboxgl-popup-content tr {
   font-size: 0.9em;
   font-weight: bold;
+}
+
+@media (min-height: 565px) {
+  .mapboxgl-popup-content th, td { padding: 5px; }
 }
 
 @media (min-width: 565px) {
