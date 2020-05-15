@@ -48,8 +48,8 @@ async function fetchCurrentSummaryData(cheerioParser) {
         } else {
           count = $(col).text()
         }
-        // Remove commas so can be parsed as int
-        count = count.replace(',', '')
+        // Remove commas/other characters so can be parsed as int
+        count = count.replace(/[^0-9]/g, '')
         // Replace empty space character with 0
         // Else if is a different, non-number character, set count as NaN
         // Else parse count string into int
@@ -78,7 +78,10 @@ async function fetchCurrentSummaryData(cheerioParser) {
       })
     })
 
-    if (dataIsInvalid) return { error: 'Data is invalid' }
+    if (dataIsInvalid) {
+      console.log("Error: Data is invalid")
+      return { error: 'Data is invalid' }
+    }
     return summaryData
   } catch(e) {
     return { error: 'No data was returned' }
@@ -131,7 +134,10 @@ async function fetchCurrentDHBData(cheerioParser) {
       })
     })
 
-    if (dataIsInvalid) return { error: 'Data is invalid' }
+    if (dataIsInvalid) {
+      console.log("Error: Data is invalid")
+      return { error: 'Data is invalid' }
+    }
     return dhbData
   } catch(e) {
     return { error: 'No data was returned' }
@@ -156,8 +162,8 @@ async function fetchCurrentTestingData(cheerioParser) {
         let colData = $(col).text()
         if (colIndex === 0) {
           // If column is number of tests
-          // Remove commas so can be parsed as int
-          let count = colData.replace(',', '')
+          // Remove commas/other characters so can be parsed as int
+          let count = colData.replace(/[^0-9]/g, '')
           // Replace empty space character with 0
           // Else if is a different, non-number character, set count as NaN
           // Else parse count string into int
@@ -192,7 +198,10 @@ async function fetchCurrentTestingData(cheerioParser) {
       })
     })
 
-    if (dataIsInvalid) return { error: 'Data is invalid' }
+    if (dataIsInvalid) {
+      console.log("Error: Data is invalid")
+      return { error: 'Data is invalid' }
+    }
     return testingData
   } catch(e) {
     return { error: 'No data was returned' }
@@ -212,7 +221,10 @@ export async function fetchCases() {
         !row['Flight departure date'] || !row['Flight number'] || !row['Last country before return'] ||
         !row['Overseas travel'] || !row['Sex']) dataIsInvalid = true
     })
-    if (dataIsInvalid) return { error: 'Data is invalid' }
+    if (dataIsInvalid) {
+      console.log("Error: Data is invalid")
+      return { error: 'Data is invalid' }
+    }
 
     // Extract case data from both confirmed and probable cases
     allCases.confirmed = extractCaseData(apiData.data.confirmed)
@@ -253,6 +265,9 @@ function extractCaseData(apiData) {
     cases.push(caseObject)
   })
 
-  if (dataIsInvalid) return { error: 'Data is invalid' }
+  if (dataIsInvalid) {
+    console.log("Error: Data is invalid")
+    return { error: 'Data is invalid' }
+  }
   return cases
 }
