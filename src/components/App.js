@@ -30,7 +30,10 @@ class App extends Component {
     fetchCurrentData()
       .then(data => {
         var { summaryData, dhbData, testingData } = data
-        if (summaryData.error || dhbData.error || testingData.error) this.setState({ invalidDataError: true })
+        if (summaryData.error || dhbData.error || testingData.error) {
+          console.log('Could not fetch summary data')
+          this.setState({ invalidDataError: true })
+        }
         else {
           this.setState({
             apiSummaryData: summaryData,
@@ -47,7 +50,10 @@ class App extends Component {
       // Initially shows ALL CASES ie. CONFIRMED + PROBABLE CASES / TOTAL NO. CASES
     fetchCases()
       .then(data => {
-        if (data.error) this.setState({ invalidDataError: true })
+        if (data.error) {
+          console.log('Could not fetch case data')
+          this.setState({ invalidDataError: true })
+        }
         else {
           this.setState({ apiCaseData: data }, () => {
             this.setState({ chartDate: findNearestDateToToday(this.getAllCases()) }, () => {

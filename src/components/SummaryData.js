@@ -22,13 +22,13 @@ class SummaryData extends Component {
       confirmedCases,
       probableCases,
       confirmedAndProbableCases,
+      activeCases,
       recoveredCases,
       deaths,
       hospitalCases
     } = this.props.summaryData
     const newCases = (confirmedCases.newInLast24Hr > 0 ? confirmedCases.newInLast24Hr : 0) + (probableCases.newInLast24Hr > 0 ? probableCases.newInLast24Hr : 0)
-    const { dhbData, testingData } = this.props
-    const activeCases = Object.keys(dhbData).reduce(function(total, name) { return total + parseInt(dhbData[name].active)}, 0)
+    const { testingData } = this.props
 
     return (
       <>
@@ -50,7 +50,7 @@ class SummaryData extends Component {
                          alt="active-cases-icon"
                          src={require('../images/icons/active-cases.png')}/>
                   </span>
-                  <span>{this.formatCount(activeCases, 'ACTIVE')}</span>
+                  <span>{this.formatCount(activeCases.totalToDate, 'ACTIVE')}</span>
                 </p>
               </div>
               <div className="new-info">

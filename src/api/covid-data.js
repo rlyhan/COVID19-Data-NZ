@@ -16,9 +16,11 @@ export async function fetchCurrentData() {
         testingData: await fetchCurrentTestingData(cheerioParser)
       }
     } catch(e) {
+      console.log(e)
       return { error: 'No data was returned' }
     }
   } catch(e) {
+    console.log(e)
     return { error: 'No data was returned' }
   }
 }
@@ -32,6 +34,7 @@ async function fetchCurrentSummaryData(cheerioParser) {
       probableCases: {},
       confirmedAndProbableCases: {},
       hospitalCases: {},
+      activeCases: {},
       recoveredCases: {},
       deaths: {}
     }
@@ -49,7 +52,7 @@ async function fetchCurrentSummaryData(cheerioParser) {
           count = $(col).text()
         }
         // Remove commas/other characters so can be parsed as int
-        count = count.replace(/[^0-9]/g, '')
+        count = count.replace(/[^0-9-]*/g, '')
         // Replace empty space character with 0
         // Else if is a different, non-number character, set count as NaN
         // Else parse count string into int
@@ -67,8 +70,8 @@ async function fetchCurrentSummaryData(cheerioParser) {
 
     // A series of checks to see if data format is valid
     var dataIsInvalid = false
-    // If number of rows != 6, data is invalid
-    if (Object.keys(summaryData).length !== 6) dataIsInvalid = true
+    // If number of rows != 7, data is invalid
+    if (Object.keys(summaryData).length !== 7) dataIsInvalid = true
     Object.keys(summaryData).forEach(function(k) {
       // If number of columns != 2, data is invalid
       if (Object.keys(summaryData[k]).length !== 2) dataIsInvalid = true
@@ -84,6 +87,7 @@ async function fetchCurrentSummaryData(cheerioParser) {
     }
     return summaryData
   } catch(e) {
+    console.log(e)
     return { error: 'No data was returned' }
   }
 }
@@ -140,6 +144,7 @@ async function fetchCurrentDHBData(cheerioParser) {
     }
     return dhbData
   } catch(e) {
+    console.log(e)
     return { error: 'No data was returned' }
   }
 }
@@ -163,7 +168,7 @@ async function fetchCurrentTestingData(cheerioParser) {
         if (colIndex === 0) {
           // If column is number of tests
           // Remove commas/other characters so can be parsed as int
-          let count = colData.replace(/[^0-9]/g, '')
+          let count = colData.replace(/[^0-9-]*/g, '')
           // Replace empty space character with 0
           // Else if is a different, non-number character, set count as NaN
           // Else parse count string into int
@@ -204,6 +209,7 @@ async function fetchCurrentTestingData(cheerioParser) {
     }
     return testingData
   } catch(e) {
+    console.log(e)
     return { error: 'No data was returned' }
   }
 }
@@ -234,6 +240,7 @@ export async function fetchCases() {
 
     return allCases
   } catch(e) {
+    console.log(e)
     return { error: 'No data was returned' }
   }
 }
