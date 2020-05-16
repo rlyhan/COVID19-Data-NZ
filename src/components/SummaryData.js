@@ -22,9 +22,9 @@ class SummaryData extends Component {
       confirmedCases,
       probableCases,
       confirmedAndProbableCases,
-      activeCases,
       recoveredCases,
       deaths,
+      activeCases,
       hospitalCases
     } = this.props.summaryData
     const newCases = (confirmedCases.newInLast24Hr > 0 ? confirmedCases.newInLast24Hr : 0) + (probableCases.newInLast24Hr > 0 ? probableCases.newInLast24Hr : 0)

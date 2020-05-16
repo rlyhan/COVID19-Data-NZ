@@ -33,10 +33,10 @@ async function fetchCurrentSummaryData(cheerioParser) {
       confirmedCases: {},
       probableCases: {},
       confirmedAndProbableCases: {},
-      hospitalCases: {},
-      activeCases: {},
       recoveredCases: {},
-      deaths: {}
+      deaths: {},
+      activeCases: {},
+      hospitalCases: {}
     }
     const dataTable = $('tbody')[0]
 
