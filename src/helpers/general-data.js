@@ -44,22 +44,22 @@ export const events = [
   },
   {
     title: "First case of local transmission reported",
-    description: "Auckland man in 40s infected by family member returning from Iran",
-    date: new Date('2020-03-05')
+    description: "Auckland man in 40's infected by family member returning from Iran",
+    date: new Date('2020-03-05'),
+    source: 'https://www.rnz.co.nz/news/national/410982/coronavirus-update-family-of-nz-s-third-case-had-travelled-to-iran'
   },
-  //https://www.rnz.co.nz/news/national/410982/coronavirus-update-family-of-nz-s-third-case-had-travelled-to-iran
   {
     title: "PM Jacinda Arden announces nationwide 4-level alert system",
     description: "Also declares NZ is currently at level 2",
     date: new Date('2020-03-21')
   },
   {
-    title: "PM Jacinda Ardern announces alert level 3 effective immediately",
+    title: "PM Jacinda Ardern announces Alert Level 3 effective immediately",
     description: "Level 4 set to commence in 48 hours",
     date: new Date('2020-03-23')
   },
   {
-    title: "Country's first day in alert level 4",
+    title: "Country's first day in Alert Level 4",
     description: "All non-essential businesses closed",
     date: new Date('2020-03-26')
   },
@@ -74,12 +74,12 @@ export const events = [
     date: new Date('2020-04-09')
   },
   {
-    title: "PM Jacinda Ardern announces Level 4 lockdown will reduce to Level 3",
+    title: "PM Jacinda Ardern announces Alert Level 4 will reduce to Level 3",
     description: "Due to commence starting Tuesday, 28 April",
     date: new Date('2020-04-20')
   },
   {
-    title: "Country re-enters Level 3 lockdown",
+    title: "Country re-enters Alert Level 3",
     description: "Non-essential businesses trading again under stricter conditions",
     date: new Date('2020-04-28')
   },
@@ -87,5 +87,15 @@ export const events = [
     title: "Zero new cases reported",
     description: "First time in approximately six weeks",
     date: new Date('2020-05-04')
+  },
+  {
+    title: "PM Jacinda Ardern announces Alert Level 3 will to reduce to Level 2",
+    description: "Due to commence starting Thursday, 14 May",
+    date: new Date('2020-05-11')
+  },
+  {
+    title: "Country re-enters Alert Level 2",
+    description: "Non-essential businesses re-opened for physical entry",
+    date: new Date('2020-05-14')
   }
 ]

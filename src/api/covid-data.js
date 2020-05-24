@@ -237,7 +237,6 @@ export async function fetchCases() {
     allCases.probable = extractCaseData(apiData.data.probable)
     // If errors have been returned, return an error
     if (allCases.confirmed.error || allCases.probable.error) return { error: 'No data was returned' }
-
     return allCases
   } catch(e) {
     console.log(e)
@@ -253,7 +252,7 @@ function extractCaseData(apiData) {
   apiData.forEach(function(currentValue) {
     let reportDate = currentValue['Date notified of potential case'].split('/')
     let caseObject = {
-      "reportDate": new Date(`${reportDate[2]}-${reportDate[1]}-${reportDate[0]}`),
+      "reportDate": `${reportDate[2]}-${reportDate[1]}-${reportDate[0]}`,
       "sex": currentValue['Sex'],
       "ageGroup": currentValue['Age group'],
       "districtHealthBoard": currentValue['DHB'],
@@ -261,12 +260,13 @@ function extractCaseData(apiData) {
                   (currentValue['Overseas travel'] === "No") ? false : "N/A",
       "lastCountryBeforeNZ": currentValue['Last country before return'],
       "flightNumber": currentValue['Flight number'],
-      "departureDate": currentValue['Flight departure date'] === "N/A" ? "N/A" : new Date(currentValue['Flight departure date']),
-      "arrivalDate": currentValue['Arrival date'] === "N/A" ? "N/A" : new Date(currentValue['Arrival date'])
+      "departureDate": currentValue['Flight departure date'] === "N/A" ? "N/A" : currentValue['Flight departure date'],
+      "arrivalDate": currentValue['Arrival date'] === "N/A" ? "N/A" : currentValue['Arrival date']
     }
     // Check dates are of valid format, else data is invalid
-    if (caseObject['reportDate'].toString() === 'Invalid Date' || caseObject['departureDate'].toString() === 'Invalid Date'
-        || caseObject['arrivalDate'].toString() === 'Invalid Date') {
+    if (new Date(caseObject['reportDate']).toString() === 'Invalid Date' || 
+        (caseObject['departureDate'] !== "N/A" && new Date(caseObject['departureDate']).toString() === 'Invalid Date') || 
+        (caseObject['arrivalDate'] !== "N/A" && new Date(caseObject['arrivalDate']).toString() === 'Invalid Date')) {
       dataIsInvalid = true
     }
     cases.push(caseObject)

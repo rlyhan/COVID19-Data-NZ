@@ -49,10 +49,12 @@ class Mapbox extends Component {
 
     // Create filters
     var filterBox = document.querySelector('.map-filter-box')
-    // if (document.querySelector('.map-filters')) filterBox.removeChild(document.querySelector('.map-filters'))
+    var filterWrapper = document.createElement('div')
+    filterWrapper.className = 'map-filters-wrapper'
+    filterBox.appendChild(filterWrapper)
     var filterList = document.createElement('div')
     filterList.className = 'map-filters'
-    filterBox.appendChild(filterList)
+    filterWrapper.appendChild(filterList)
     var displayDataNames = ['districtHealthBoardName', 'total', 'active', 'last24Hours', 'recovered', 'deceased']
     displayDataNames.forEach(function(displayData) {
       // Label
@@ -155,19 +157,19 @@ class Mapbox extends Component {
                   <table>
                     <tr><th>${dhbName.toUpperCase()}</th></tr>
                     <tr style="color:#97AEDC">
-                      <td>TOTAL CASES</td><td>${total}</td>
+                      <td>TOTAL CASES</td><td><div><span>${total}</span></div></td>
                     </tr>
                     <tr style="color:#E6ADB7">
-                      <td>ACTIVE CASES</td><td>${active}</td>
+                      <td>ACTIVE CASES</td><td><div><span>${active}</span></div></td>
                     </tr>
                     <tr style="color:#E3C567">
-                      <td>NEW CASES (LAST 24 HOURS)</td><td>${last24Hours}</td>
+                      <td>NEW CASES (LAST 24 HOURS)</td><td><div><span>${last24Hours}</span></div></td>
                     </tr>
                     <tr style="color:#9BC995">
-                      <td>RECOVERED</td><td>${recovered}</td>
+                      <td>RECOVERED</td><td><div><span>${recovered}</span></div></td>
                     </tr>
                     <tr style="color:#ED7F7D">
-                      <td>DEAD</td><td>${deceased}</td>
+                      <td>DEAD</td><td><div><span>${deceased}</span></div></td>
                     </tr>
                   </table>
                 </div>
@@ -178,7 +180,7 @@ class Mapbox extends Component {
   }
 
   componentWillUnmount() {
-    if (document.querySelector('.map-filters')) document.querySelector('.map-filter-box').removeChild(document.querySelector('.map-filters'))
+    if (document.querySelector('.map-filters-wrapper')) document.querySelector('.map-filter-box').removeChild(document.querySelector('.map-filters-wrapper'))
     this.map.remove()
   }
 

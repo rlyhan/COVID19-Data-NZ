@@ -1,21 +1,9 @@
 import React, { Component } from 'react'
 
 import { convertDateToString } from '../helpers/dates'
+import { formatCount, formatCountIncrease } from '../helpers/general-helpers'
 
 class SummaryData extends Component {
-
-  formatCount = (num, type) => {
-    // Make count string with CASES/CASE/NO CASES depending on number
-    return (num > 1) ? `${num} ${type} CASES` :
-           (num === 1) ? `${num} ${type} CASE` :
-           `NO ${type} CASES`
-  }
-
-  formatCountIncrease = num => {
-    // Add plus or minus in front of count string
-    if (Math.sign(num) === -1) return `${num.toLocaleString('en')} `
-    else if (Math.sign(num) === 1) return `+${num.toLocaleString('en')} `
-  }
 
   render() {
     const {
@@ -50,7 +38,7 @@ class SummaryData extends Component {
                          alt="active-cases-icon"
                          src={require('../images/icons/active-cases.png')}/>
                   </span>
-                  <span>{this.formatCount(activeCases.totalToDate, 'ACTIVE')}</span>
+                  <span>{formatCount(activeCases.totalToDate, 'ACTIVE')}</span>
                 </p>
               </div>
               <div className="new-info">
@@ -63,7 +51,7 @@ class SummaryData extends Component {
                              style={{transform: newCases > 0 ? 'rotate(180deg)' : 'rotate(0deg)'}}
                              src={require('../images/icons/new-case-arrow.png')}/>
                       </span>
-                      <span>{this.formatCount(newCases, 'NEW')}</span>
+                      <span>{formatCount(newCases, 'NEW')}</span>
                     </>
                   }
                 </p>
@@ -95,7 +83,7 @@ class SummaryData extends Component {
                 {
                   recoveredCases.newInLast24Hr !== 0 ?
                   <span>
-                    <span>{this.formatCountIncrease(recoveredCases.newInLast24Hr)}</span>
+                    <span>{formatCountIncrease(recoveredCases.newInLast24Hr)}</span>
                     <img className="change-arrow"
                          alt="change-arrow"
                          style={{transform: recoveredCases.newInLast24Hr > 0 ? 'rotate(180deg)' : 'rotate(0deg)'}}
@@ -116,7 +104,7 @@ class SummaryData extends Component {
               {
                 deaths.newInLast24Hr !== 0 ?
                 <span>
-                  <span>{this.formatCountIncrease(deaths.newInLast24Hr)}</span>
+                  <span>{formatCountIncrease(deaths.newInLast24Hr)}</span>
                   <img className="change-arrow"
                        alt="change-arrow"
                        style={{transform: deaths.newInLast24Hr > 0 ? 'rotate(180deg)' : 'rotate(0deg)'}}
@@ -137,7 +125,7 @@ class SummaryData extends Component {
                 {
                   hospitalCases.newInLast24Hr !== 0 ?
                   <span>
-                    <span>{this.formatCountIncrease(hospitalCases.newInLast24Hr)}</span>
+                    <span>{formatCountIncrease(hospitalCases.newInLast24Hr)}</span>
                     <img className="change-arrow"
                          alt="change-arrow"
                          style={{transform: hospitalCases.newInLast24Hr > 0 ? 'rotate(180deg)' : 'rotate(0deg)'}}
@@ -158,7 +146,7 @@ class SummaryData extends Component {
                 {
                   testingData.totalToDate.testCount !== 0 ?
                   <span>
-                    <span>{this.formatCountIncrease(testingData.testedYesterday.testCount)}</span>
+                    <span>{formatCountIncrease(testingData.testedYesterday.testCount)}</span>
                     <img className="change-arrow"
                          alt="change-arrow"
                          style={{transform: testingData.testedYesterday.testCount > 0 ? 'rotate(180deg)' : 'rotate(0deg)'}}

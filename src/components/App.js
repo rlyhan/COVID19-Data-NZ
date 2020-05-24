@@ -3,7 +3,7 @@ import SummaryData from './SummaryData'
 import Mapbox from './visual-data/Mapbox'
 import GoogleChart from './visual-data/GoogleChart'
 import { fetchCurrentData, fetchCases } from '../api/covid-data'
-import { getAnnotationCoordinates } from '../helpers/coordinates'
+import { getLineCoordinates } from '../helpers/coordinates'
 import { firstConfirmedCaseDay, findNearestDateToToday } from '../helpers/dates'
 
 class App extends Component {
@@ -19,7 +19,7 @@ class App extends Component {
       chartDate: null,
       googleChartData: [],
       chosenCaseSet: [],  // Array of selected cases to be sent as co-ords
-      chosenVisualType: "map", // Tells which chart to show on page, ie. ANNOTATION / MAP
+      chosenVisualType: "map", // Tells which chart to show on page, ie. MAP / CASE TIMELINE
       chosenCaseType: "confirmed and probable", // Tells whether to get CONFIRMED + PROBABLE / CONFIRMED ONLY cases
       chosenNumberType: "new" // Tells which co-ordinates to get, ie. TOTAL or NEW
     }
@@ -56,7 +56,7 @@ class App extends Component {
         }
         else {
           this.setState({ apiCaseData: data }, () => {
-            this.setState({ chartDate: findNearestDateToToday(this.getAllCases()) }, () => {
+            this.setState({ chartDate: new Date(findNearestDateToToday(this.getAllCases())) }, () => {
               this.setChartData()
               // this.setState({ dhbChartData: getBarCoordinates(this.getAllCases()) })
             })
@@ -94,7 +94,7 @@ class App extends Component {
       switch(this.state.chosenVisualType) {
         case "case timeline":
           this.setState({
-            googleChartData: getAnnotationCoordinates(this.state.chosenCaseSet, firstConfirmedCaseDay, this.state.chartDate, this.state.chosenNumberType)
+            googleChartData: getLineCoordinates(this.state.chosenCaseSet, firstConfirmedCaseDay, this.state.chartDate, this.state.chosenNumberType)
           })
           break;
         // case "bar":

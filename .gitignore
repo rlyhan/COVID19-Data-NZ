@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 .env
+all-cases.xlsx
 
 # testing
 /coverage
