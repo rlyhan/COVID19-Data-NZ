@@ -484,9 +484,9 @@ button:hover {
       }
 
       .toggle-options {
-        color: #c4a939;
+        color: #dabc3f;
         font-weight: 700;
-        transition: 0.3s ease;
+        transition: 0.2s ease;
         user-select: none;
         -webkit-user-select: none;
         -webkit-touch-callout: none;
@@ -496,8 +496,8 @@ button:hover {
 
         .toggle-options:hover,
         .options-clicked {
-          color: #131313;
-          background-color: #c4a939 !important;
+          color: white;
+          background-color: #ae9632;
           cursor: pointer;
         }
 
@@ -579,9 +579,9 @@ button:hover {
       }
 
       .google-visualization-controls-slider-thumb {
-        top: -6px !important;
-        width: 18px !important;
-        height: 18px !important;
+        top: -7px !important;
+        width: 16px !important;
+        height: 16px !important;
         background-color: #eee !important;
         border: 2px solid #bebebe !important;        
         border-radius: 50% !important;
@@ -593,8 +593,7 @@ button:hover {
 
       .google-visualization-controls-rangefilter-thumblabel {
         padding: 4px !important;
-        border: 1px solid #303030;
-        border-radius: 20px;
+        border-radius: 14px;
         background: #181818;
         color: white !important;
         font-size: 0.5em !important;
@@ -614,6 +613,7 @@ button:hover {
       }
     
       .google-visualization-controls-slider-horizontal {
+        height: 6px !important;
         margin: 0 5px;
         border: 0px !important;
         border-radius: 10px !important;
@@ -622,6 +622,7 @@ button:hover {
       }
 
       .google-visualization-controls-slider-handle {
+        height: 6px !important;
         padding-right: 4px;
         border-radius: 10px !important;
         background: #2e5cb8 !important;
