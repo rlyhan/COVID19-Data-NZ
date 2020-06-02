@@ -6,6 +6,8 @@ import { fetchCurrentData, fetchCases } from '../api/covid-data'
 import { getLineCoordinates } from '../helpers/coordinates'
 import { firstConfirmedCaseDay, findNearestDateToToday } from '../helpers/dates'
 
+var today = new Date()
+
 class App extends Component {
 
   constructor() {
@@ -94,7 +96,12 @@ class App extends Component {
       switch(this.state.chosenVisualType) {
         case "case timeline":
           this.setState({
-            googleChartData: getLineCoordinates(this.state.chosenCaseSet, firstConfirmedCaseDay, this.state.chartDate, this.state.chosenNumberType)
+            googleChartData: getLineCoordinates(
+              this.state.chosenCaseSet, 
+              firstConfirmedCaseDay, 
+              today, 
+              this.state.chosenNumberType
+            )
           })
           break;
         // case "bar":

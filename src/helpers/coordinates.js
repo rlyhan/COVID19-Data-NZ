@@ -84,17 +84,23 @@ function getTotalCaseCoordinatesLine(cases, startDate, endDate) {
   // In each coordinate, add the date and accumulative total cases on this date
   var dateList = getDateList(startDate, endDate)
   let totalCases = 0
-  let annotationIndex = 0
+  let eventIndex = 0
+  // For each date between start date and end date
+    // Add a coordinate with... 
+      // Current date
+      // Number of total cases on date (number increases if new cases on this day / stays same if no new cases)
+      // Tooltip (box appearing on graph showing no. cases + event on this date)
+      // Letter used to index the event / Null if no event
   for (let index = 0; index < dateList.length; index++) {
-    let currentDate = convertDateToString(dateList[index], 'simple')
-    if (orderedCasesByDate[currentDate] !== undefined) totalCases += orderedCasesByDate[currentDate].length
-    if (findEvent(dateList[index]) !== undefined) annotationIndex += 1
-    coords.push([
-      dateList[index], 
-      totalCases, 
-      createTooltip(dateList[index], totalCases),
-      findEvent(dateList[index]) !== undefined ? String.fromCharCode(annotationIndex+64) : null
-    ])
+    let currentDate = dateList[index]
+    let dateString = convertDateToString(currentDate, 'simple')
+    if (findEvent(currentDate) !== undefined) eventIndex += 1
+
+    if (orderedCasesByDate[dateString] !== undefined) totalCases += orderedCasesByDate[dateString].length
+    let tooltip = createTooltip(currentDate, totalCases)
+    let eventLetter = findEvent(currentDate) !== undefined ? String.fromCharCode(eventIndex+64) : null
+
+    coords.push([currentDate, totalCases, tooltip, eventLetter])
   }
 
   return coords
@@ -104,21 +110,24 @@ function getTotalCaseCoordinatesLine(cases, startDate, endDate) {
 function getNewCaseCoordinatesLine(cases, startDate, endDate) {
   var coords = []
   let orderedCasesByDate = sortAndGroupCasesByDate(cases, startDate, endDate)
-
-  // For each date between start date and end date, add a coordinate with the number of cases 
-  // on date, or 0 if there are no cases on that date
+  // For each date between start date and end date
+    // Add a coordinate with... 
+      // Current date
+      // Number of new cases on date / 0 if none
+      // Tooltip (box appearing on graph showing no. cases + event on this date)
+      // Letter used to index the event / Null if no event
   var dateList = getDateList(startDate, endDate)
-  let annotationIndex = 0
+  let eventIndex = 0
   for (let index = 0; index < dateList.length; index++) {
-    let currentDate = convertDateToString(dateList[index], 'simple')
-    let newCases = orderedCasesByDate[currentDate] !== undefined ? orderedCasesByDate[currentDate].length : 0
-    if (findEvent(dateList[index]) !== undefined) annotationIndex += 1
-    coords.push([
-      dateList[index], 
-      newCases, 
-      createTooltip(dateList[index], newCases),
-      findEvent(dateList[index]) !== undefined ? String.fromCharCode(annotationIndex+64) : null
-    ])
+    let currentDate = dateList[index]
+    let dateString = convertDateToString(currentDate, 'simple')
+    if (findEvent(currentDate) !== undefined) eventIndex += 1
+
+    let newCases = orderedCasesByDate[dateString] !== undefined ? orderedCasesByDate[dateString].length : 0
+    let tooltip = createTooltip(currentDate, newCases)
+    let eventLetter = findEvent(currentDate) !== undefined ? String.fromCharCode(eventIndex+64) : null
+
+    coords.push([currentDate, newCases, tooltip, eventLetter])
   }
 
   return coords
