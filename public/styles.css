@@ -116,16 +116,14 @@ button:hover {
   }
 
   #toggle:checked ~ .navigation {
-    display: block;
+    display: grid;
   }
 
-    #toggle:checked ~ .navigation > div:nth-child(1) > button {
-      padding-left: 0;
-    }
-
-    #toggle:checked ~ .navigation > div:nth-child(2) > button {
-      padding-left: 0;
-      margin-top: 12px;
+    @media only screen and (max-width: 564px) {
+      .navigation > div > button {
+        width: 100%;
+        border-radius: 5px;
+      }
     }
 
   #toggle:hover {
@@ -154,12 +152,8 @@ button:hover {
     }
 
     #toggle:checked ~ .navigation {
-      display: flex;
-    }
-
-    #toggle:checked ~ .navigation > div:nth-child(1) > button,
-    #toggle:checked ~ .navigation > div:nth-child(2) > button {
-      margin-top: 0;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
     }
 
     #burger {
@@ -173,7 +167,7 @@ button:hover {
   .navigation {
     margin-bottom: 15px;
     display: none;
-    justify-content: center;
+    grid-row-gap: 8px;
     align-items: center;
   }
 
@@ -181,24 +175,18 @@ button:hover {
     .navigation {
       margin: 0;
       text-align: right;
-      display: flex;
-      justify-content: flex-end;
+      display: grid;
+      grid-column-gap: 10px;
+      grid-template-columns: auto auto auto;
     }
   }
 
     /* Buttons */
 
-    .navigation > div {
-      padding-top: 5px;
-    }
-
-    @media (min-width: 565px) {
-      .navigation > div { padding-top: 0; }
-    }
-
       .navigation button {
-        padding: 0;
+        padding: 6px 6px;
         border-width: 0px;
+        border-radius: 25px;
         background-color: transparent;
         color: white;
         font-family: 'Quicksand', sans-serif;
@@ -207,42 +195,56 @@ button:hover {
         text-decoration: none;
       }
 
-        .navigation > div:nth-child(1) > button {
-          margin-right: 20px;
+      @media screen and (min-width: 565px) {
+        .navigation button {
+          padding: 5px 8px;
         }
+      }
 
-        /* Underline */
+      /* Selected Nav Button */
 
-        .navigation button:after {
-          height: 2px;
-          margin-top: 3px;
-          background-color: white;
-          opacity: 0;
-          display: block;
-          content: '';
-          transition: 0.5s;
-        }
+      .navigation button:not([disabled]) {
+        color: white;
+        background-color: transparent;
+      }
 
-        .navigation button[disabled]:after {
-          opacity: 1;
-        }
+      .navigation button[disabled] {
+        color: #2e5cb8;
+        background-color: white;
+      }
 
-        .navigation button:not([disabled]):hover:after {
-          opacity: 1;
-          animation: center-grow 200ms;
-          animation-fill-mode: forwards;
-        }
+      /* Underline */
 
-        @keyframes center-grow {
-          0% {
-            clip-path: polygon(50% 100%,50% 0,50% 0,50% 100%);
-            -webkit-clip-path: polygon(50% 100%,50% 0,50% 0,50% 100%);
+      /* .navigation button:after {
+        height: 2px;
+        margin-top: 3px;
+        background-color: white;
+        opacity: 0;
+        display: block;
+        content: '';
+        transition: 0.5s;
+      }
+
+      .navigation button[disabled]:after {
+        opacity: 1;
+      }
+
+      .navigation button:not([disabled]):hover:after {
+        opacity: 1;
+        animation: center-grow 200ms;
+        animation-fill-mode: forwards;
+      }
+
+      @keyframes center-grow {
+        0% {
+          clip-path: polygon(50% 100%,50% 0,50% 0,50% 100%);
+          -webkit-clip-path: polygon(50% 100%,50% 0,50% 0,50% 100%);
+      }
+        100%{
+          clip-path: polygon(0 100%, 0 0, 100% 0, 100% 100%);
+          -webkit-clip-path: polygon(0 100%, 0 0, 100% 0, 100% 100%);
         }
-          100%{
-            clip-path: polygon(0 100%, 0 0, 100% 0, 100% 100%);
-            -webkit-clip-path: polygon(0 100%, 0 0, 100% 0, 100% 100%);
-          }
-        }
+      } */
 
 /*** Site Content ***/
 
@@ -253,21 +255,16 @@ button:hover {
   grid-template-areas: " a " " b ";
 }
 
-@media (orientation: landscape) {
-  .site-content {
-    height: 80vh;
-  }
-}
-
 @media (min-width: 1010px) and (orientation: landscape) {
   .site-content {
-    grid-template-columns: 30% 70%;
+    height: 80vh;
+    grid-template-columns: 3fr 7fr;
     grid-column-gap: 7px;
     grid-template-areas: " b a ";
   }
 }
 
-@media (min-width: 1010px) and (orientation: portait) {
+@media (min-width: 1010px) and (orientation: portrait) {
   .site-content {
     display: grid;
     grid-template-columns: auto;
@@ -289,7 +286,7 @@ button:hover {
 
 /* Google Chart */
 
-.google-chart {
+.timeline {
   border: 1px solid #262626;
   box-sizing: border-box;
   display: block;
@@ -297,14 +294,14 @@ button:hover {
 }
 
 @media (min-width: 565px) {
-  .google-chart {
+  .timeline {
     display: grid;
-    grid-template-columns: 72% 28%;
+    grid-template-columns: 70% 30%;
   }
 }
 
 @media (orientation: landscape) {
-  .google-chart { height: calc(80vh - 65px); }
+  .timeline { height: calc(80vh - 65px); }
 }
 
   /* Events */
@@ -428,25 +425,52 @@ button:hover {
           font-weight: 400;
         }
 
+  /* Statistics */
 
-  /* Bar Chart */
+  .statistics {
+    border: 1px solid #212121;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 70% 30%;
+    position: relative;
+  }
 
-    /* Chart border: grey */
-    .google-bar-chart {
-      border: 1px solid #212121
+    /* Data Selector */
+
+    .data-selector {
+      border-left: 1px solid #212121;
+      background: #0d0d0d;
+      overflow-y: auto;
+      overflow-x: hidden;
     }
 
-      /* Chart background: black */
-      .google-bar-chart > div > div > svg > g > rect[fill] {
-        fill: black;
+      .statistic-type {
+        
       }
 
-      /* Chart label text: white */
-      .google-bar-chart > div > div > svg > g > text {
-        fill: white;
-        font-family: 'Quicksand', sans-serif !important;
-        font-size: 9px !important;
+    /* Pie Chart */
+
+    .pie-chart {
+    }
+
+    /* Bar Chart */
+
+      /* Chart border: grey */
+      .google-bar-chart {
+        border: 1px solid #212121;
       }
+
+        /* Chart background: black */
+        .google-bar-chart > div > div > svg > g > rect[fill] {
+          fill: black;
+        }
+
+        /* Chart label text: white */
+        .google-bar-chart > div > div > svg > g > text {
+          fill: white;
+          font-family: 'Quicksand', sans-serif !important;
+          font-size: 9px !important;
+        }
 
   /* Toggle Menu */
 
@@ -771,15 +795,17 @@ button:hover {
 /*** Mapbox ***/
 
 .map-wrapper {
+  position: relative;
   max-width: 95vw;
 }
 
-@media (orientation: landscape) {
-  .mapContainer { height: 80vh; }
+.mapContainer {
+  height: 60vh;
 }
 
-@media (orientation: portrait) {
-  .mapContainer { height: 60vh; }
+@media (min-width: 1010px) and (orientation: landscape) {
+  .map-wrapper { max-width: 100%; }
+  .mapContainer { height: 80vh; }
 }
 
 /* Popup */

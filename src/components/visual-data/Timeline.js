@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 
-import LineChart from './google-charts/LineChart'
-import BarChart from './google-charts/BarChart'
+import CaseTimeline from './google-charts/CaseTimeline'
 
 import { events } from '../../helpers/general-data'
 import { convertDateToString } from '../../helpers/dates'
@@ -44,15 +43,14 @@ class GoogleChart extends Component {
     return (
       <>
         { this._isMounted && <>
-            <div className="google-chart">
+            <div className="timeline">
             {
               this.props.visualType === 'case timeline' ?
-              <LineChart data={this.props.googleChartData}
-                         caseType={this.props.caseType}
-                         numberType={this.props.numberType}
-                         selectedEvent={this.state.selectedEvent} /> :
-              this.props.visualType === 'bar' ?
-              <BarChart data={this.props.googleChartData} /> : null
+              <CaseTimeline data={this.props.googleChartData}
+                            caseType={this.props.caseType}
+                            numberType={this.props.numberType}
+                            selectedEvent={this.state.selectedEvent} /> :
+              null
             }
             <div className="events">
               <table className="events-table">

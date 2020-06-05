@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import SummaryData from './SummaryData'
 import Mapbox from './visual-data/Mapbox'
-import GoogleChart from './visual-data/GoogleChart'
+import Timeline from './visual-data/Timeline'
+import Statistics from './visual-data/Statistics'
 import { fetchCurrentData, fetchCases } from '../api/covid-data'
 import { getLineCoordinates } from '../helpers/coordinates'
 import { firstConfirmedCaseDay, findNearestDateToToday } from '../helpers/dates'
@@ -172,9 +173,11 @@ class App extends Component {
                         disabled={this.state.chosenVisualType === "case timeline"}
                         onClick={e => this.toggleChartType(e)}>CASE TIMELINE</button>
               </div>
-              {/*<button value="bar"
-                      disabled={this.state.chosenVisualType === "bar"}
-                      onClick={e => this.toggleChartType(e)}>STATISTICS</button>*/}
+              {/* <div>
+                <button value="statistics"
+                        disabled={this.state.chosenVisualType === "statistics"}
+                        onClick={e => this.toggleChartType(e)}>STATISTICS</button>
+              </div> */}
             </div>
           </div>
           <div className="site-content">
@@ -183,13 +186,16 @@ class App extends Component {
                 {
                   this.state.chosenVisualType === 'map' ?
                   <Mapbox data={this.state.apiDHBData} /> :
-                  <GoogleChart googleChartData={this.state.googleChartData}
-                               dhbData={this.state.apiDHBData}
-                               visualType={this.state.chosenVisualType}
-                               caseType={this.state.chosenCaseType}
-                               numberType={this.state.chosenNumberType}
-                               toggleNumberType={this.toggleNumberType}
-                               toggleCaseType={this.toggleCaseType} />
+                  this.state.chosenVisualType === 'case timeline' ?
+                  <Timeline googleChartData={this.state.googleChartData}
+                            dhbData={this.state.apiDHBData}
+                            visualType={this.state.chosenVisualType}
+                            caseType={this.state.chosenCaseType}
+                            numberType={this.state.chosenNumberType}
+                            toggleNumberType={this.toggleNumberType}
+                            toggleCaseType={this.toggleCaseType} /> :
+                  this.state.chosenVisualType === 'statistics' ?
+                  <Statistics /> : null
                 }
               </div>
             </div>

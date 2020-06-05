@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 import Chart from 'react-google-charts'
 
-// If landscape, chart height 80vh minus height of filter box
-// If portrait, chart height 60vh
 const initialChartOrientation = (window.screen.width > window.screen.height) ? 'landscape' : 'portrait'
 
-class LineChart extends Component {
+class CaseTimeline extends Component {
 
   constructor(props) {
     super(props)
@@ -27,6 +25,8 @@ class LineChart extends Component {
 
   forceChartResize = () => {
     // Force update on component upon resize to force chart redraw
+      // If landscape, chart height 80vh minus height of filter box
+      // If portrait, chart height 60vh
     var currentChartOrientation = (window.screen.width > window.screen.height) ? 'landscape' : 'portrait'
     if (this.state.prevChartOrientation !== currentChartOrientation) {
       this.setState({
@@ -187,4 +187,4 @@ class LineChart extends Component {
   }
 }
 
-export default LineChart
+export default CaseTimeline

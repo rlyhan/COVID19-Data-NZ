@@ -26,7 +26,8 @@ class Mapbox extends Component {
       container: this.mapContainer,
       style: 'mapbox://styles/rlyhan/ck98cd91l3zpm1imxqvljfg9y',
       center: [this.state.lng, this.state.lat],
-      zoom: this.state.zoom
+      zoom: this.state.zoom,
+      trackResize: true
     })
     // Add full screen button
     map.addControl(new mapboxgl.FullscreenControl())
@@ -44,8 +45,6 @@ class Mapbox extends Component {
       createPointsSource(map)
       changeDisplayData(this.state.displayData, map, data, dhbList)
     })
-
-    window.addEventListener("resize", map.resize())
 
     // Create filters
     var filterBox = document.querySelector('.map-filter-box')
@@ -176,10 +175,13 @@ class Mapbox extends Component {
                 `
       }
     })
+
     this.map = map
+    window.addEventListener('resize', this.forceMapResize)
   }
 
   componentWillUnmount() {
+    window.removeEventListener('resize', this.forceMapResize)
     if (document.querySelector('.map-filters-wrapper')) document.querySelector('.map-filter-box').removeChild(document.querySelector('.map-filters-wrapper'))
     this.map.remove()
   }
@@ -191,6 +193,13 @@ class Mapbox extends Component {
     } else if (document.querySelector('.toggle-container').classList.contains('hidden')) {
       document.querySelector('.toggle-container').classList.add('down')
       document.querySelector('.toggle-container').classList.remove('hidden')
+    }
+  }
+
+  forceMapResize = () => {
+    if (this.map) {
+      document.querySelector('.mapboxgl-canvas').style.width = `${window.screen.width*0.6}px`
+      this.map.resize()
     }
   }
 

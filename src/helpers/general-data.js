@@ -49,7 +49,7 @@ export const events = [
     source: 'https://www.rnz.co.nz/news/national/410982/coronavirus-update-family-of-nz-s-third-case-had-travelled-to-iran'
   },
   {
-    title: "PM Jacinda Arden announces nationwide 4-level alert system",
+    title: "PM Jacinda Ardern announces nationwide 4-level alert system",
     description: "Also declares NZ is currently at level 2",
     date: new Date('2020-03-21')
   },
