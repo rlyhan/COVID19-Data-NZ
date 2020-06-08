@@ -3,6 +3,7 @@ import axios from 'axios'
 
 import { dhbList } from '../helpers/general-data'
 import { getRegularCaseString } from '../helpers/general-helpers'
+import { convertDateToString } from '../helpers/dates'
 
 // Fetches current COVID-19 data
 export async function fetchCurrentData() {
@@ -250,9 +251,11 @@ function extractCaseData(apiData) {
   var dataIsInvalid = false
 
   apiData.forEach(function(currentValue) {
-    let reportDate = currentValue['Date notified of potential case'].split('/')
+    let reportDate = currentValue['Date notified of potential case']
+    let departureDate = currentValue['Flight departure date']
+    let arrivalDate = currentValue['Arrival date']
     let caseObject = {
-      "reportDate": `${reportDate[2]}-${reportDate[1]}-${reportDate[0]}`,
+      "reportDate": convertDateToString(reportDate, 'simple'),
       "sex": currentValue['Sex'],
       "ageGroup": currentValue['Age group'],
       "districtHealthBoard": currentValue['DHB'],
@@ -260,11 +263,11 @@ function extractCaseData(apiData) {
                   (currentValue['Overseas travel'] === "No") ? false : "N/A",
       "lastCountryBeforeNZ": currentValue['Last country before return'],
       "flightNumber": currentValue['Flight number'],
-      "departureDate": currentValue['Flight departure date'] === "N/A" ? "N/A" : currentValue['Flight departure date'],
-      "arrivalDate": currentValue['Arrival date'] === "N/A" ? "N/A" : currentValue['Arrival date']
+      "departureDate": departureDate === "N/A" ? "N/A" : convertDateToString(departureDate, 'simple'),
+      "arrivalDate": arrivalDate === "N/A" ? "N/A" : convertDateToString(arrivalDate, 'simple')
     }
     // Check dates are of valid format, else data is invalid
-    if (new Date(caseObject['reportDate']).toString() === 'Invalid Date' || 
+    if (reportDate === 'Invalid Date' || 
         (caseObject['departureDate'] !== "N/A" && new Date(caseObject['departureDate']).toString() === 'Invalid Date') || 
         (caseObject['arrivalDate'] !== "N/A" && new Date(caseObject['arrivalDate']).toString() === 'Invalid Date')) {
       dataIsInvalid = true
