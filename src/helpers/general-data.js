@@ -97,5 +97,20 @@ export const events = [
     title: "Country re-enters Alert Level 2",
     description: "Non-essential businesses re-opened for physical entry",
     date: new Date('2020-05-14')
+  },
+  {
+    title: "Final active case of COVID-19 recovers",
+    description: "PM Jacinda Ardern also announces reduction to Alert Level 1 starting midnight",
+    date: new Date('2020-06-08')
+  },
+  {
+    title: "Country enters Alert Level 1",
+    description: "Restrictions across country except for border controls lifted",
+    date: new Date('2020-06-09')
+  },
+  {
+    title: "2 new COVID-19 cases",
+    description: "First new cases since 22 May; two women from UK",
+    date: new Date('2020-06-16')
   }
 ]

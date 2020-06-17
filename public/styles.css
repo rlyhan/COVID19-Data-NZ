@@ -77,9 +77,9 @@ button:hover {
   /* Logo */
 
   .header h2 {
-    padding-top: 5px;
+    padding-top: 3px;
     color: white;
-    font-size: 0.9em;
+    font-size: 1em;
     visibility: hidden;
   }
 
@@ -264,14 +264,6 @@ button:hover {
   }
 }
 
-@media (min-width: 1010px) and (orientation: portrait) {
-  .site-content {
-    display: grid;
-    grid-template-columns: auto;
-    grid-row-gap: 7px;
-  }
-}
-
 /*** Visual Data ***/
 
 .visual-data-wrapper {
@@ -428,25 +420,219 @@ button:hover {
   /* Statistics */
 
   .statistics {
+    height: 60vh;
     border: 1px solid #212121;
     box-sizing: border-box;
     display: grid;
-    grid-template-columns: 70% 30%;
+    grid-template-columns: 100%;
+    grid-template-rows: auto min-content;
     position: relative;
+    overflow: auto;
+  }
+
+  @media screen and (min-width: 565px) {
+    .statistics { 
+      grid-template-rows: auto;
+      grid-template-columns: 70% 30%; 
+      overflow: hidden;
+    }
+  }
+  
+  @media (orientation: landscape) and (min-width: 1010px) {
+    .statistics { height: 80vh; }
   }
 
     /* Data Selector */
 
-    .data-selector {
-      border-left: 1px solid #212121;
+    .statistics > input {
+      height: 21px;
+      width: 100%;
+      margin: 0;
+      position: absolute;
+      z-index: 2;
+      opacity: 0;
+      grid-column: 1;
+      grid-row: 2;
+      align-self: end;
+    }
+
+    @media (max-width: 564px) {
+
+      .statistics > input:checked {
+        grid-row: 1;
+        align-self: auto;
+      }
+  
+      .statistics > input:checked ~ .data-selector-toggle {
+        grid-row: 1;
+        align-self: auto;
+      }
+  
+      .statistics > input:checked ~ .data-selector-toggle .arrow {  
+        margin-bottom: 3px;
+        transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
+      }
+  
+      .statistics > input:checked ~ .data-selector-wrapper {
+        display: grid;
+        grid-row: 2;
+      }
+  
+      .statistics > input:checked ~ .pie-chart {
+        display: none;
+      }
+
+    }
+
+    .data-selector-toggle {
+      height: min-content;
+      border-top: 1px solid #212121;
+      background: white;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+      grid-column: 1;
+      grid-row: 2;
+      align-self: end;
+    }
+
+    @media screen and (min-width: 565px) {
+      .data-selector-toggle { display: none; }
+    }
+
+      .data-selector-toggle p {
+        text-align: center;
+        margin: 0;
+      }
+
+      .data-selector-toggle .arrow {
+        border: solid black;
+        border-width: 0 3px 3px 0;
+        display: inline-block;
+        padding: 3px;
+        transform: rotate(-135deg);
+        -webkit-transform: rotate(-135deg);
+      }
+
+    .data-selector-wrapper {
+      padding: 2px;
+      border-top: 1px solid #212121; 
       background: #0d0d0d;
       overflow-y: auto;
       overflow-x: hidden;
+      display: none;
+      grid-template-rows: min-content min-content;
+      grid-row-gap: 2px;
+      user-select: none;
     }
 
-      .statistic-type {
-        
+    @media screen and (min-width: 565px) {
+      .data-selector-wrapper { 
+        display: grid;
+        border-top: 0;
+        border-left: 1px solid #212121; 
       }
+    }
+
+      .total-cases-data-selector, .testing-data-selector {
+        display: grid;
+        grid-auto-rows: auto 1fr;
+        grid-row-gap: 2px;
+      }
+        
+        .data-selector-button {
+          padding: 10px;
+          border-radius: 5px;
+          background-image: linear-gradient(-15deg, #1f1f1f, #151515);
+          font-weight: bold;
+          display: grid;
+          grid-template-columns: auto 1fr;
+          grid-column-gap: 8px;
+        }
+
+        .data-selector-button:hover {
+          cursor: pointer;
+        }
+
+          .data-selector-button > p {
+            width: 20px;
+            text-align: center;
+          }
+
+            .data-selector-button .arrow {
+              border: solid white;
+              border-width: 0 3px 3px 0;
+              display: inline-block;
+              padding: 3px;
+            }
+            
+              .right {
+                transform: rotate(-45deg);
+                -webkit-transform: rotate(-45deg);
+              }
+
+              .down {
+                margin-left: 1px;
+                transform: rotate(45deg);
+                -webkit-transform: rotate(45deg);
+              }
+
+          .data-selector-button span {
+            align-self: center;
+          }
+
+        .data-selector-subcategory {
+          padding: 5px 0;
+          font-size: 0.8em;
+          font-weight: 500;
+          text-align: center;
+        }
+
+        .data-selector {
+          display: grid;
+          grid-auto-rows: 1fr;
+          grid-row-gap: 2px;
+        }
+
+          .statistic-type {
+            padding: 10px;
+            background-color: #131313;
+            border-radius: 5px;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-column-gap: 8px;
+          }
+
+          .statistic-type:hover {
+            /* background-color: #beab5b; */
+            background-color: #4470c6;
+            cursor: pointer;
+          }
+
+          .statistic-type.active:hover {
+            /* background-color: #b69d35; */
+            background-color: #204081;
+            cursor: pointer;
+          } 
+
+          .active {
+            /* background-color: #b69d35; */
+            background-color: #204081;
+            font-weight: 600;
+            cursor: pointer;
+          }
+
+            .statistic-icon {
+              width: 20px;
+              vertical-align: middle;
+              align-self: center;
+            }
+
+            .statistic-type > span {
+              vertical-align: middle;
+              align-self: center;
+            }
 
     /* Pie Chart */
 
@@ -978,13 +1164,13 @@ button:hover {
   -webkit-transform: rotate(45deg);
 }
 
-.down > .toggle-filter-display {
+.showing > .toggle-filter-display {
   margin-top: 8px;
   transform: rotate(-135deg);
   -webkit-transform: rotate(-135deg);
 }
 
-.down ~ .map-filters-wrapper {
+.showing ~ .map-filters-wrapper {
   display: block;
 }
 

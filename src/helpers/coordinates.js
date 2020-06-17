@@ -7,12 +7,12 @@ import {
 } from './dates'
 
 // Create an HTML for tooltip for a coordinate
-function createTooltip(coordDate, coordValue) {
+function createTooltip(coordDate, coordValue, coordType) {
   var coordEvent = findEvent(coordDate) || ''
   var eventParagraph = coordEvent && `<p><span>${coordEvent.title.toUpperCase()}: </span><span>${coordEvent.description.toUpperCase()}</span></p>`
   return `<div class="tooltip">
     <p>${convertDateToString(coordDate, 'text').toUpperCase()}</p>
-    <p>${formatCount(coordValue, '')}</p>
+    <p>${formatCount(coordValue, coordType)}</p>
     ${eventParagraph || ''}
   </div>`
 }
@@ -97,7 +97,7 @@ function getTotalCaseCoordinatesLine(cases, startDate, endDate) {
     if (findEvent(currentDate) !== undefined) eventIndex += 1
 
     if (orderedCasesByDate[dateString] !== undefined) totalCases += orderedCasesByDate[dateString].length
-    let tooltip = createTooltip(currentDate, totalCases)
+    let tooltip = createTooltip(currentDate, totalCases, 'TOTAL')
     let eventLetter = findEvent(currentDate) !== undefined ? String.fromCharCode(eventIndex+64) : null
 
     coords.push([currentDate, totalCases, tooltip, eventLetter])
@@ -124,7 +124,7 @@ function getNewCaseCoordinatesLine(cases, startDate, endDate) {
     if (findEvent(currentDate) !== undefined) eventIndex += 1
 
     let newCases = orderedCasesByDate[dateString] !== undefined ? orderedCasesByDate[dateString].length : 0
-    let tooltip = createTooltip(currentDate, newCases)
+    let tooltip = createTooltip(currentDate, newCases, 'NEW')
     let eventLetter = findEvent(currentDate) !== undefined ? String.fromCharCode(eventIndex+64) : null
 
     coords.push([currentDate, newCases, tooltip, eventLetter])
