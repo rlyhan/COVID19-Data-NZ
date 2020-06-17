@@ -9,11 +9,23 @@ const router = express.Router()
 
 // Link to official health.govt.nz data
 const summary = 'https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-novel-coronavirus/covid-19-current-situation/covid-19-current-cases'
+const testing = 'https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-novel-coronavirus/covid-19-current-situation/covid-19-current-cases/covid-19-testing-rates-ethnicity-and-dhb'
 const caseList = 'https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-novel-coronavirus/covid-19-current-situation/covid-19-current-cases/covid-19-current-cases-details'
 
 /* Get overall case information in total + last 24 hours */
 router.get('/current-data', (req, res) => {
   return axios.get(summary)
+    .then(page => {
+      res.send(page.data)
+    })
+    .catch(err => {
+      res.status(500).json({})
+    })
+})
+
+/* Get information about testing rates */
+router.get('/testing-rates', (req, res) => {
+  return axios.get(testing)
     .then(page => {
       res.send(page.data)
     })

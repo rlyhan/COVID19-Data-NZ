@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 
-import { convertDateToString } from '../helpers/dates'
 import { formatCount, formatCountIncrease } from '../helpers/general-helpers'
 
 class SummaryData extends Component {
@@ -20,7 +19,7 @@ class SummaryData extends Component {
 
     return (
       <>
-      { this.props.summaryData && this.props.testingData && this.props.chartDate &&
+      { this.props.summaryData && this.props.testingData &&
         <div className="summary-data">
           <div className="total-cases">
             <div className="total-cases-container">
@@ -55,7 +54,7 @@ class SummaryData extends Component {
                     </>
                   }
                 </p>
-              <ul>
+                <ul>
                   {
                     confirmedCases.newInLast24Hr > 0 &&
                     <li>
@@ -173,9 +172,6 @@ class SummaryData extends Component {
                 ICONS MADE BY FREEPIK FROM <a target="_blank" rel="noopener noreferrer" href="https://www.flaticon.com">FLATICON</a>.
               </p>
               <p style={{fontSize: '1.3em'}}>PLEASE NOTE</p>
-              <p>
-                {`GRAPH IS CURRENTLY SHOWING DATA UP TO DATE OF LATEST CASE: ${convertDateToString(this.props.chartDate, 'text').toUpperCase()}.`}
-              </p>
               <p style={{marginBottom: 0}}>
                 THIS SITE IS NOT AN OFFICIAL DATA SOURCE. NEW DATA USUALLY UPDATED AFTER 1PM.
               </p>

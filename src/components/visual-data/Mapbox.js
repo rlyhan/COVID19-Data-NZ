@@ -187,11 +187,11 @@ class Mapbox extends Component {
   }
 
   toggleFilterBox = e => {
-    if (document.querySelector('.toggle-container').classList.contains('down')) {
-      document.querySelector('.toggle-container').classList.remove('down')
+    if (document.querySelector('.toggle-container').classList.contains('showing')) {
+      document.querySelector('.toggle-container').classList.remove('showing')
       document.querySelector('.toggle-container').classList.add('hidden')
     } else if (document.querySelector('.toggle-container').classList.contains('hidden')) {
-      document.querySelector('.toggle-container').classList.add('down')
+      document.querySelector('.toggle-container').classList.add('showing')
       document.querySelector('.toggle-container').classList.remove('hidden')
     }
   }
