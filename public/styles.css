@@ -427,7 +427,7 @@ button:hover {
     grid-template-columns: 100%;
     grid-template-rows: auto min-content;
     position: relative;
-    overflow: auto;
+    overflow: hidden;
   }
 
   @media screen and (min-width: 565px) {
@@ -441,6 +441,10 @@ button:hover {
   @media (orientation: landscape) and (min-width: 1010px) {
     .statistics { height: 80vh; }
   }
+
+    .pie-chart {
+      display: block;
+    }
 
     /* Data Selector */
 
@@ -477,10 +481,16 @@ button:hover {
       .statistics > input:checked ~ .data-selector-wrapper {
         display: grid;
         grid-row: 2;
+        z-index: 10;
       }
   
       .statistics > input:checked ~ .pie-chart {
-        display: none;
+        z-index: -99;
+        position: absolute;
+      }
+
+      @media screen and (min-width: 565px) { 
+        .statistics > input:checked ~ .pie-chart { position: relative; }
       }
 
     }
@@ -633,11 +643,6 @@ button:hover {
               vertical-align: middle;
               align-self: center;
             }
-
-    /* Pie Chart */
-
-    .pie-chart {
-    }
 
     /* Bar Chart */
 

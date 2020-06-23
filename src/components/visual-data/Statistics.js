@@ -46,37 +46,45 @@ class Statistics extends Component {
   }
 
   forceChartResize = () => {
-    // Force update on component upon resize to force chart redraw
     var currentChartOrientation = (window.screen.width > window.screen.height) ? 'landscape' : 'portrait'
     var currentScreenWidth = (window.screen.width < 565) ? 'smallest' : 
                              (window.screen.width >= 565 && window.screen.width < 1010) ? 'smaller' : 
                              'larger'
-    // If screen orientation change OR screen size threshold change, update state
+    // If screen orientation change OR screen size threshold change, redraw chart
     if (this.state.prevChartOrientation !== currentChartOrientation || this.state.prevScreenWidth !== currentScreenWidth) {
-      // If screen orientation = landscape AND screen width >= 1010px, set chart height to 80vh 
-      // Else if screen width >= 565px and < 1010px, set chart height to 60vh 
-      // Else set chart height to 55vh
-      // Update chart orientation and chart width if they have changed
-      this.setState({
-        chartHeight: (currentChartOrientation === 'landscape' && currentScreenWidth === 'larger') ? '80vh' : 
-                     ((currentChartOrientation === 'portrait' && currentScreenWidth === 'larger') || 
-                     currentScreenWidth === 'smaller') ? '60vh' : '55vh',
-        prevChartOrientation: this.state.prevChartOrientation !== currentChartOrientation ? currentChartOrientation : this.state.prevChartOrientation,
-        prevScreenWidth: this.state.prevScreenWidth !== currentScreenWidth ? currentScreenWidth : this.state.prevScreenWidth
-      }, () => {
-        document.querySelector('.pie-chart > div').style.height = this.state.chartHeight
-        document.querySelector('.pie-chart > div > div').style.height = this.state.chartHeight
-        if (this.chartWrapper) this.chartWrapper.draw()
-        this.forceUpdate()
-      })
+      this.forceChartRedraw()
     }
+  }
+
+  forceChartRedraw = () => {
+    var currentChartOrientation = (window.screen.width > window.screen.height) ? 'landscape' : 'portrait'
+    var currentScreenWidth = (window.screen.width < 565) ? 'smallest' : 
+                             (window.screen.width >= 565 && window.screen.width < 1010) ? 'smaller' : 
+                             'larger'
+    // If screen orientation = landscape AND screen width >= 1010px, set chart height to 80vh 
+    // Else if screen width >= 565px and < 1010px, set chart height to 60vh 
+    // Else set chart height to 55vh
+    // Update chart orientation and chart width if they have changed
+    this.setState({
+      chartHeight: (currentChartOrientation === 'landscape' && currentScreenWidth === 'larger') ? '80vh' : 
+                    ((currentChartOrientation === 'portrait' && currentScreenWidth === 'larger') || 
+                    currentScreenWidth === 'smaller') ? '60vh' : '55vh',
+      prevChartOrientation: this.state.prevChartOrientation !== currentChartOrientation ? currentChartOrientation : this.state.prevChartOrientation,
+      prevScreenWidth: this.state.prevScreenWidth !== currentScreenWidth ? currentScreenWidth : this.state.prevScreenWidth
+    }, () => {
+      document.querySelector('.pie-chart > div').style.height = this.state.chartHeight
+      document.querySelector('.pie-chart > div > div').style.height = this.state.chartHeight
+      if (this.chartWrapper) this.chartWrapper.draw()
+      this.forceUpdate()
+    })
   }
 
   render() {
     return (
       <div className="statistics" 
            style={{ gridTemplateRows: (this.state.showDataSelector && window.screen.width < 565) && 'min-content auto'}}>
-        <input type="checkbox" onClick={() => this.setState({ showDataSelector: !this.state.showDataSelector })}></input>
+        <input type="checkbox" 
+               onClick={() => this.setState({ showDataSelector: !this.state.showDataSelector })}></input>
         <div className="data-selector-toggle">
           <p><i className="arrow"></i></p>
         </div>
