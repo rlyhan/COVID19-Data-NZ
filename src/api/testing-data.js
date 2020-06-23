@@ -51,12 +51,12 @@ async function fetchTestingRatesByDHB(cheerioParser) {
         })
         // Delete total count column
         delete dhbData.Total
-
+        
         // A series of checks to see if data format is valid
         var dataIsInvalid = false
         var correctFormatDHBList = dhbList.map(dhbObject => dhbObject.name)
-        // If number of keys (DHBs) != 21, data is invalid
-        if (Object.keys(dhbData).length !== 21) dataIsInvalid = true
+        // If number of keys (DHBs) != 20, data is invalid
+        if (Object.keys(dhbData).length !== 20) dataIsInvalid = true
         Object.keys(dhbData).forEach(function(k) {
           // If DHB name does not match spelling in provided DHB list (with exception of 'Unknown'), data is invalid
           if (!correctFormatDHBList.includes(k) && k !== 'Unknown') dataIsInvalid = true
