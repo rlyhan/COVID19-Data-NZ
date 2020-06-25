@@ -125,19 +125,19 @@ async function fetchCurrentDHBData(cheerioParser) {
 
     // A series of checks to see if data format is valid
     var dataIsInvalid = false
-    var correctFormatDHBList = dhbList.map(dhbObject => dhbObject.name)
+    // var correctFormatDHBList = dhbList.map(dhbObject => dhbObject.name)
     // If number of keys (DHBs) != 20, data is invalid
-    if (Object.keys(dhbData).length !== 20) dataIsInvalid = true
-    Object.keys(dhbData).forEach(function(k) {
-      // If DHB name does not match spelling in provided DHB list, data is invalid
-      if (!correctFormatDHBList.includes(k)) dataIsInvalid = true
-      // If DHB object's keys length != 5, data is invalid
-      if (Object.keys(dhbData[k]).length !== 5) dataIsInvalid = true
-      Object.entries(dhbData[k]).forEach(function(j) {
-        // If each DHB object's entry is not a number, data is invalid
-        if (isNaN(j[1])) dataIsInvalid = true
-      })
-    })
+    // if (Object.keys(dhbData).length !== 20) dataIsInvalid = true
+    // Object.keys(dhbData).forEach(function(k) {
+    //   // If DHB name does not match spelling in provided DHB list, data is invalid
+    //   if (!correctFormatDHBList.includes(k)) dataIsInvalid = true
+    //   // If DHB object's keys length != 5, data is invalid
+    //   if (Object.keys(dhbData[k]).length !== 5) dataIsInvalid = true
+    //   Object.entries(dhbData[k]).forEach(function(j) {
+    //     // If each DHB object's entry is not a number, data is invalid
+    //     if (isNaN(j[1])) dataIsInvalid = true
+    //   })
+    // })
 
     if (dataIsInvalid) {
       console.log("Error: Data is invalid")
