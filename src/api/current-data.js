@@ -97,9 +97,11 @@ async function fetchCurrentDHBData(cheerioParser) {
   try {
     const $ = cheerioParser
     var dhbData = {}
-    const dataTable = $('tbody')[2]
+    const dhbTable = $($('.table-style-two').filter(function() {
+      return $($(this).find('caption')).text().includes('Total cases by DHB, as at 9.00 am')
+    })).find('tbody')
 
-    $(dataTable).find('tr').each((rowIndex, row) => {
+    $(dhbTable).find('tr').each((rowIndex, row) => {
       let dhbObject = {}
       let dhbName = ''
       $(row).find('td').each((colIndex, col) => {
@@ -155,9 +157,11 @@ async function fetchCurrentAgeGroupData(cheerioParser) {
   try {
     const $ = cheerioParser
     var ageGroupData = {}
-    const dataTable = $('tbody')[3]
+    const ageGroupTable = $($('.table-style-two').filter(function() {
+      return $($(this).find('caption')).text().includes('Total cases by age as at 9.00 am')
+    })).find('tbody')
 
-    $(dataTable).find('tr').each((rowIndex, row) => {
+    $(ageGroupTable).find('tr').each((rowIndex, row) => {
       var ageGroup = ''
       let ageGroupObject = {}
       $(row).find('td').each((colIndex, col) => {
@@ -204,9 +208,11 @@ async function fetchCurrentTestingData(cheerioParser) {
       totalToDate: {},
       suppliesInStock: {}
     }
-    const dataTable = $('tbody')[6]
+    const testingTable = $($('.table-style-two').filter(function() {
+      return $($(this).find('caption')).text().includes('Lab testing for COVID-19 as at 9.00 am')
+    })).find('tbody')
 
-    $(dataTable).find('tr').each((rowIndex, row) => {
+    $(testingTable).find('tr').each((rowIndex, row) => {
       let testingStatisticObject = Object.keys(testingData)[rowIndex]
       $(row).find('td').each((colIndex, col) => {
         let colData = $(col).text()
@@ -228,8 +234,6 @@ async function fetchCurrentTestingData(cheerioParser) {
         }
       })
     })
-
-    console.log(testingData)
 
     // A series of checks to see if data format is valid
     var dataIsInvalid = false

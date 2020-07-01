@@ -90,8 +90,8 @@ async function fetchTestingRatesByEthnicity(cheerioParser) {
           if (colData === '&nbsp;') colData = 0
           if (colIndex === 0) ethnicityName = getRegularCaseString(colData.replace(/&nbsp;/g, ' '))
           else if (colIndex === 1) ethnicityObject.totalPeopleTested = parseInt(colData.replace(/,/g, '')) || 'N/A'
-          else if (colIndex === 2) ethnicityObject.positiveTestRate = parseFloat(colData.replace(/%/g, '')) || 'N/A'
-          else if (colIndex === 3) ethnicityObject.testRatePer1000 = parseInt(colData) || 'N/A'
+          else if (colIndex === 2) ethnicityObject.testRatePer1000 = parseInt(colData) || 'N/A'
+          else if (colIndex === 3) ethnicityObject.positiveTestRate = parseFloat(colData.replace(/%/g, '')) || 'N/A'
       })
       // Add DHB object of info to main object
       if (Object.keys(ethnicityObject).length > 0) ethnicityData[ethnicityName] = ethnicityObject
