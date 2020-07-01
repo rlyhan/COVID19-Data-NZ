@@ -1,7 +1,6 @@
 import cheerio from 'cheerio'
 import axios from 'axios'
 
-import { dhbList } from '../helpers/general-data'
 import { getRegularCaseString } from '../helpers/general-helpers'
 
 // Fetches current COVID-19 data
@@ -98,7 +97,7 @@ async function fetchCurrentDHBData(cheerioParser) {
   try {
     const $ = cheerioParser
     var dhbData = {}
-    const dataTable = $('tbody')[1]
+    const dataTable = $('tbody')[2]
 
     $(dataTable).find('tr').each((rowIndex, row) => {
       let dhbObject = {}
@@ -120,7 +119,8 @@ async function fetchCurrentDHBData(cheerioParser) {
       // Add DHB object of info to main object
       if (Object.keys(dhbObject).length > 0) dhbData[dhbName] = dhbObject
     })
-    // Delete total count column
+    // Delete managed isolation / total count columns
+    delete dhbData['Managed Isolation & Quarantine']
     delete dhbData.Total
 
     // A series of checks to see if data format is valid
@@ -204,7 +204,7 @@ async function fetchCurrentTestingData(cheerioParser) {
       totalToDate: {},
       suppliesInStock: {}
     }
-    const dataTable = $('tbody')[5]
+    const dataTable = $('tbody')[6]
 
     $(dataTable).find('tr').each((rowIndex, row) => {
       let testingStatisticObject = Object.keys(testingData)[rowIndex]
@@ -228,6 +228,8 @@ async function fetchCurrentTestingData(cheerioParser) {
         }
       })
     })
+
+    console.log(testingData)
 
     // A series of checks to see if data format is valid
     var dataIsInvalid = false
