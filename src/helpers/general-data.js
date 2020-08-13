@@ -112,5 +112,15 @@ export const events = [
     title: "2 new COVID-19 cases",
     description: "First new cases since 22 May; two women from UK",
     date: new Date('2020-06-16')
+  },
+  {
+    title: "New COVID-19 case at border",
+    description: "First of all COVID-19 cases kept in managed isolation",
+    date: new Date('2020-06-18')
+  },
+  {
+    title: "4 new cases of community transmission",
+    description: "Family in Auckland; first cases of community transmission after 101 days free",
+    date: new Date('2020-08-11')
   }
 ]

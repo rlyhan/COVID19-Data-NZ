@@ -12,7 +12,7 @@ export async function fetchCases() {
       var rowSamples = [apiData.data.confirmed[apiData.data.confirmed.length-1], apiData.data.probable[0]]
       rowSamples.forEach(function(row) {
         if (!row['Age group'] || !row['Arrival date'] || !row['DHB'] || !row['Date notified of potential case'] ||
-          !row['Flight departure date'] || !row['Flight number'] || !row['Last country before return'] ||
+          !row['Flight departure date'] || !row['Flight number'] || !row['Last location before return'] ||
           !row['Overseas travel'] || !row['Sex']) dataIsInvalid = true
       })
       if (dataIsInvalid) {
