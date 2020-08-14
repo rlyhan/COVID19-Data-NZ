@@ -32,22 +32,22 @@ async function fetchTestingRatesByDHB(cheerioParser) {
         const dataTable = $('tbody')[0]
 
         $(dataTable).find('tr').each((rowIndex, row) => {
-        let dhbObject = {}
-        let dhbName = ''
-        $(row).find('td').each((colIndex, col) => {
-            let colData = $(col).text()
-            if (colData === '&nbsp;') colData = 0
-            if (colIndex === 0) dhbName = getRegularCaseString(colData.replace(/&nbsp;/g, ' '))
-            else if (colIndex === 1) dhbObject.totalPeopleTested = parseInt(colData.replace(/,/g, '')) || 'N/A'
-            else if (colIndex === 2) dhbObject.positiveTestRate = parseFloat(colData.replace(/%/g, '')) || 'N/A'
-            else if (colIndex === 3) dhbObject.testRatePer1000 = parseInt(colData) || 'N/A'
-        })
-        // Special cases for safe formatting
-        if (dhbName === 'Mid Central') dhbName = 'Midcentral'
-        if (dhbName === 'Tairāwhiti') dhbName = 'Tairawhiti'
-        if (dhbName === 'Waitematā') dhbName = 'Waitemata'
-        // Add DHB object of info to main object
-        if (Object.keys(dhbObject).length > 0) dhbData[dhbName] = dhbObject
+          let dhbObject = {}
+          let dhbName = ''
+          $(row).find('td').each((colIndex, col) => {
+              let colData = $(col).text()
+              if (colData === '&nbsp;') colData = 0
+              if (colIndex === 0) dhbName = getRegularCaseString(colData.replace(/&nbsp;/g, ' '))
+              else if (colIndex === 1) dhbObject.totalPeopleTested = parseInt(colData.replace(/\D/g, '')) || 'N/A'
+              else if (colIndex === 2) dhbObject.testRatePer1000 = parseInt(colData) || 'N/A'
+              else if (colIndex === 3) dhbObject.positiveTestRate = parseFloat(colData.replace(/%/g, '')) || 'N/A'
+          })
+          // Special cases for safe formatting
+          if (dhbName === 'Mid Central') dhbName = 'Midcentral'
+          if (dhbName === 'Tairāwhiti') dhbName = 'Tairawhiti'
+          if (dhbName === 'Waitematā') dhbName = 'Waitemata'
+          // Add DHB object of info to main object
+          if (Object.keys(dhbObject).length > 0) dhbData[dhbName] = dhbObject
         })
         // Delete total count column
         delete dhbData.Total
@@ -82,18 +82,18 @@ async function fetchTestingRatesByEthnicity(cheerioParser) {
       const dataTable = $('tbody')[1]
 
       $(dataTable).find('tr').each((rowIndex, row) => {
-      let ethnicityObject = {}
-      let ethnicityName = ''
-      $(row).find('td').each((colIndex, col) => {
-          let colData = $(col).text()
-          if (colData === '&nbsp;') colData = 0
-          if (colIndex === 0) ethnicityName = getRegularCaseString(colData.replace(/&nbsp;/g, ' '))
-          else if (colIndex === 1) ethnicityObject.totalPeopleTested = parseInt(colData.replace(/,/g, '')) || 'N/A'
-          else if (colIndex === 2) ethnicityObject.testRatePer1000 = parseInt(colData) || 'N/A'
-          else if (colIndex === 3) ethnicityObject.positiveTestRate = parseFloat(colData.replace(/%/g, '')) || 'N/A'
-      })
-      // Add DHB object of info to main object
-      if (Object.keys(ethnicityObject).length > 0) ethnicityData[ethnicityName] = ethnicityObject
+        let ethnicityObject = {}
+        let ethnicityName = ''
+        $(row).find('td').each((colIndex, col) => {
+            let colData = $(col).text()
+            if (colData === '&nbsp;') colData = 0
+            if (colIndex === 0) ethnicityName = getRegularCaseString(colData.replace(/&nbsp;/g, ' '))
+            else if (colIndex === 1) ethnicityObject.totalPeopleTested = parseInt(colData.replace(/\D/g, '')) || 'N/A'
+            else if (colIndex === 2) ethnicityObject.testRatePer1000 = parseInt(colData) || 'N/A'
+            else if (colIndex === 3) ethnicityObject.positiveTestRate = parseFloat(colData.replace(/%/g, '')) || 'N/A'
+        })
+        // Add DHB object of info to main object
+        if (Object.keys(ethnicityObject).length > 0) ethnicityData[ethnicityName] = ethnicityObject
       })
       // Delete total count column
       delete ethnicityData.Total
