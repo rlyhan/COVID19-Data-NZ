@@ -16,7 +16,7 @@ class Mapbox extends Component {
       lat: -41.206,
       zoom: 4.2,
       mapLoaded: false,
-      displayData: 'total'
+      displayDataName: 'total'
     }
   }
 
@@ -43,7 +43,7 @@ class Mapbox extends Component {
       })
       addDHBRegions(map, hoveredStateId)
       createPointsSource(map)
-      changeDisplayData(this.state.displayData, map, data, dhbList)
+      changeDisplayData(this.state.displayDataName, map, data, dhbList)
     })
 
     // Create filters
@@ -54,7 +54,8 @@ class Mapbox extends Component {
     var filterList = document.createElement('div')
     filterList.className = 'map-filters'
     filterWrapper.appendChild(filterList)
-    var displayDataNames = ['districtHealthBoardName', 'total', 'active', 'last24Hours', 'recovered', 'deceased']
+    // var displayDataNames = ['districtHealthBoardName', 'total', 'active', 'last24Hours', 'recovered', 'deceased']
+    var displayDataNames = ['districtHealthBoardName', 'total', 'active', 'recovered', 'deceased']
     displayDataNames.forEach(function(displayData) {
       // Label
       var label = document.createElement('label')
@@ -65,7 +66,7 @@ class Mapbox extends Component {
       radio.type = 'radio'
       radio.name = displayData
       radio.value = displayData
-      radio.checked = this.state.displayData === displayData
+      radio.checked = this.state.displayDataName === displayData
       radio.onchange = function() {
         // Hide popup (if any)
         if (currentPopup) currentPopup.remove()
@@ -73,7 +74,7 @@ class Mapbox extends Component {
         document.querySelectorAll('input').forEach(radioBtn => radioBtn.checked = false)
         // Check this radio button
         radio.checked = true
-        this.setState({ displayData: displayData })
+        this.setState({ displayDataName: displayData })
         // Change the data displayed
         changeDisplayData(displayData, map, data, dhbList)
       }.bind(this)
@@ -160,9 +161,6 @@ class Mapbox extends Component {
                     </tr>
                     <tr style="color:#E6ADB7">
                       <td>ACTIVE CASES</td><td><div><span>${active}</span></div></td>
-                    </tr>
-                    <tr style="color:#E3C567">
-                      <td>NEW CASES (LAST 24 HOURS)</td><td><div><span>${last24Hours}</span></div></td>
                     </tr>
                     <tr style="color:#9BC995">
                       <td>RECOVERED</td><td><div><span>${recovered}</span></div></td>
