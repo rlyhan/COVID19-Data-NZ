@@ -7,19 +7,6 @@ export async function fetchCases() {
     var allCases = {}
     try {
       const apiData = await axios.get('/api/healthgovt/all-cases')
-      // Run a check to see if columns are named correctly
-      var dataIsInvalid = false
-      var rowSamples = [apiData.data.confirmed[apiData.data.confirmed.length-1], apiData.data.probable[0]]
-      rowSamples.forEach(function(row) {
-        if (!row['Age group'] || !row['Arrival date'] || !row['DHB'] || !row['Date notified of potential case'] ||
-          !row['Flight departure date'] || !row['Flight number'] || !row['Last location before return'] ||
-          !row['Overseas travel'] || !row['Sex']) dataIsInvalid = true
-      })
-      if (dataIsInvalid) {
-        console.log("Error: Data is invalid")
-        return { error: 'Data is invalid' }
-      }
-  
       // Extract case data from both confirmed and probable cases
       allCases.confirmed = extractCaseData(apiData.data.confirmed)
       allCases.probable = extractCaseData(apiData.data.probable)
