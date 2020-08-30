@@ -25,27 +25,18 @@ export async function fetchCases() {
     var dataIsInvalid = false
   
     apiData.forEach(function(currentValue) {
+      console.log(currentValue)
       let reportDate = currentValue['Date notified of potential case']
-      let departureDate = currentValue['Flight departure date']
-      let arrivalDate = currentValue['Arrival date']
       let caseObject = {
         "reportDate": convertDateToString(reportDate, 'simple'),
         "sex": currentValue['Sex'],
         "ageGroup": currentValue['Age group'],
         "districtHealthBoard": currentValue['DHB'],
         "overseas": (currentValue['Overseas travel'] === "Yes") ? true :
-                    (currentValue['Overseas travel'] === "No") ? false : "N/A",
-        "lastCountryBeforeNZ": currentValue['Last country before return'],
-        "flightNumber": currentValue['Flight number'],
-        "departureDate": departureDate === "N/A" ? "N/A" : convertDateToString(departureDate, 'simple'),
-        "arrivalDate": arrivalDate === "N/A" ? "N/A" : convertDateToString(arrivalDate, 'simple')
+                    (currentValue['Overseas travel'] === "No") ? false : "N/A"
       }
       // Check dates are of valid format, else data is invalid
-      if (reportDate === 'Invalid Date' || 
-          (caseObject['departureDate'] !== "N/A" && new Date(caseObject['departureDate']).toString() === 'Invalid Date') || 
-          (caseObject['arrivalDate'] !== "N/A" && new Date(caseObject['arrivalDate']).toString() === 'Invalid Date')) {
-        dataIsInvalid = true
-      }
+      if (reportDate === 'Invalid Date') dataIsInvalid = true
       cases.push(caseObject)
     })
   

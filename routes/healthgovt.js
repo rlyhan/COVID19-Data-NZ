@@ -3,7 +3,7 @@ const axios = require('axios')
 const cheerio = require('cheerio')
 const https = require('https')
 const fs = require('fs')
-if(typeof require !== 'undefined') XLSX = require('xlsx')
+const XLSX = require('xlsx')
 
 const router = express.Router()
 
@@ -48,10 +48,10 @@ router.get('/all-cases', (req, res) => {
         response.on('end', function() {
           fs.readFile('all-cases.xlsx', function(err, buffer) {
             if (err) res.status(500).json({})
-            allCases = XLSX.read(buffer, {type: 'buffer', cellDates: true})
+            var allCases = XLSX.read(buffer, {type: 'buffer', cellDates: true})
             res.json({
-              confirmed: XLSX.utils.sheet_to_json(allCases.Sheets[allCases.SheetNames[0]], {defval: "N/A", range: 3}),
-              probable: XLSX.utils.sheet_to_json(allCases.Sheets[allCases.SheetNames[1]], {defval: "N/A", range: 3})
+              confirmed: XLSX.utils.sheet_to_json(allCases.Sheets[allCases.SheetNames[0]], {defval: "N/A", range: 2}),
+              probable: XLSX.utils.sheet_to_json(allCases.Sheets[allCases.SheetNames[1]], {defval: "N/A", range: 2})
             })
           })
         })
