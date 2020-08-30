@@ -29,9 +29,9 @@ async function fetchTestingRatesByDHB(cheerioParser) {
     try {
         const $ = cheerioParser
         var dhbData = {}
-        const dataTable = $('tbody')[0]
+        const dhbTable = $('tbody')[1]
 
-        $(dataTable).find('tr').each((rowIndex, row) => {
+        $(dhbTable).find('tr').each((rowIndex, row) => {
           let dhbObject = {}
           let dhbName = ''
           $(row).find('td').each((colIndex, col) => {
@@ -79,9 +79,11 @@ async function fetchTestingRatesByEthnicity(cheerioParser) {
   try {
       const $ = cheerioParser
       var ethnicityData = {}
-      const dataTable = $('tbody')[1]
+      const ethnicityTable = $($('.table-style-two').filter(function() {
+        return $($(this).find('caption')).text().includes('COVID-19 tests (people tested, positivity %, and test rate per 1,000 people) by ethnicity')
+      })).find('tbody')
 
-      $(dataTable).find('tr').each((rowIndex, row) => {
+      $(ethnicityTable).find('tr').each((rowIndex, row) => {
         let ethnicityObject = {}
         let ethnicityName = ''
         $(row).find('td').each((colIndex, col) => {

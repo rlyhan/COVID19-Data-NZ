@@ -25,7 +25,6 @@ export async function fetchCases() {
     var dataIsInvalid = false
   
     apiData.forEach(function(currentValue) {
-      console.log(currentValue)
       let reportDate = currentValue['Date notified of potential case']
       let caseObject = {
         "reportDate": convertDateToString(reportDate, 'simple'),
