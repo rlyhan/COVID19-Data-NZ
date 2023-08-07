@@ -14,3 +14,7 @@ Data visualiser detailing the COVID-19 pandemic in New Zealand.
 
 * Mapbox GL JS
 * Google Charts
+
+This project is no longer being maintained. Here is what the site looked like previously.
+
+![image](https://github.com/rlyhan/COVID19-Data-NZ/assets/36525681/473a9724-cf6b-4936-a6a1-f8db40e189b2)
